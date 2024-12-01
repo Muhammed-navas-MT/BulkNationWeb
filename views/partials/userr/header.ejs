@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Evara - eCommerce HTML Template</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="frontend/assets/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="frontend/assets/css/main.css?v=3.4">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+   <style>
+ .icon-container {
+      position: relative;
+      display: inline-block;
+    }
+    .shopping-bag {
+      font-size: 24px;
+      color: black;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: orange; /* Teal color */
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 5px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+
+
+
+    .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color:orange;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color:black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+.offer {
+    display: inline-block; /* Ensures background only covers the content */
+    background-color: #f0f8ff; /* Light blue background */
+    color: #000; /* Black text */
+    padding: 5px 10px; /* Space around the text */
+    border-radius: 5px; /* Rounded corners */
+    font-weight: bold; /* Makes the text bold */
+  }
+
+
+
+   </style>
+    
+</head>
+
+<body>
+   
+
+    <!-- Quick view -->
+    <div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">              
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>       
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="detail-gallery">
+                                <span class="zoom-icon"><i class="fi-rs-search"></i></span>
+                                <!-- MAIN SLIDES -->
+                                <div class="product-image-slider">
+                                    <!-- <figure class="border-radius-10">
+                                        <img src="assets/imgs/shop/product-16-2.jpg" alt="product image">
+                                    </figure>
+                                    <figure class="border-radius-10">
+                                        <img src="assets/imgs/shop/product-16-1.jpg" alt="product image">
+                                    </figure>
+                                    <figure class="border-radius-10">
+                                        <img src="assets/imgs/shop/product-16-3.jpg" alt="product image">
+                                    </figure>
+                                    <figure class="border-radius-10">
+                                        <img src="assets/imgs/shop/product-16-4.jpg" alt="product image">
+                                    </figure>
+                                    <figure class="border-radius-10">
+                                        <img src="assets/imgs/shop/product-16-5.jpg" alt="product image">
+                                    </figure>
+                                    <figure class="border-radius-10">
+                                        <img src="assets/imgs/shop/product-16-6.jpg" alt="product image">
+                                    </figure>
+                                    <figure class="border-radius-10">
+                                        <img src="assets/imgs/shop/product-16-7.jpg" alt="product image">
+                                    </figure> -->
+                                </div>
+                                <!-- THUMBNAILS -->
+                                <div class="slider-nav-thumbnails pl-15 pr-15">
+                                    <!-- <div><img src="assets/imgs/shop/thumbnail-3.jpg" alt="product image"></div>
+                                    <div><img src="assets/imgs/shop/thumbnail-4.jpg" alt="product image"></div>
+                                    <div><img src="assets/imgs/shop/thumbnail-5.jpg" alt="product image"></div>
+                                    <div><img src="assets/imgs/shop/thumbnail-6.jpg" alt="product image"></div>
+                                    <div><img src="assets/imgs/shop/thumbnail-7.jpg" alt="product image"></div>
+                                    <div><img src="assets/imgs/shop/thumbnail-8.jpg" alt="product image"></div>
+                                    <div><img src="assets/imgs/shop/thumbnail-9.jpg" alt="product image"></div> -->
+                                </div>
+                            </div>
+                            <!-- End Gallery -->
+                            <div class="social-icons single-share">
+                                <ul class="text-grey-5 d-inline-block">
+                                    <!-- <li><strong class="mr-10">Share this:</strong></li>
+                                    <li class="social-facebook"><a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a></li>
+                                    <li class="social-twitter"> <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a></li>
+                                    <li class="social-instagram"><a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a></li>
+                                    <li class="social-linkedin"><a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a></li> -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="detail-info">
+                                <!-- <h3 class="title-detail mt-30">Colorful Pattern Shirts HD450</h3>
+                                <div class="product-detail-rating">
+                                    <div class="pro-details-brand">
+                                        <span> Brands: <a href="shop-grid-right.html">Bootstrap</a></span>
+                                    </div>
+                                    <div class="product-rate-cover text-end">
+                                        <div class="product-rate d-inline-block">
+                                            <div class="product-rating" style="width:90%">
+                                            </div>
+                                        </div>
+                                        <span class="font-small ml-5 text-muted"> (25 reviews)</span>
+                                    </div>
+                                </div> -->
+                                <div class="clearfix product-price-cover">
+                                    <!-- <div class="product-price primary-color float-left">
+                                        <ins><span class="text-brand">$120.00</span></ins>
+                                        <ins><span class="old-price font-md ml-15">$200.00</span></ins>
+                                        <span class="save-price  font-md color3 ml-15">25% Off</span>
+                                    </div> -->
+                                </div>
+                                <div class="bt-1 border-color-1 mt-15 mb-15"></div>
+                                <div class="short-desc mb-30">
+                                    <!-- <p class="font-sm">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam rem officia, corrupti reiciendis minima nisi modi,!</p> -->
+                                </div>
+                                
+                                <div class="attr-detail attr-color mb-15">
+                                   
+                                </div>
+                                <div class="attr-detail attr-size">
+                                   
+                                </div>
+                                <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                <div class="detail-extralink">
+                                    <div class="detail-qty border radius">
+                                        <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
+                                        <span class="qty-val">1</span>
+                                        <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                    </div>
+                                    <div class="product-extra-link2">
+                                        <button type="submit" class="button button-add-to-cart">Add to cart</button>
+                                        <!-- <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                        <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Detail Info -->
+                        </div>
+                    </div>
+                </div>        
+        </div>
+        </div>
+    </div>
+  
+    
+    <header class="header-area header-style-1 header-height-2">
+        
+        <div class="header-middle header-middle-ptb-1 d-none d-lg-block">
+            <div class="container">
+                <div class="header-wrap">
+                    <div class="">
+                        <!-- <a href="home.ejs"><img src="frontend/assets/imgs/theme/logo.svg" alt="logo"></a> -->
+                         <h1 style="width:auto; margin-left: -35%;" class="" >Bulk Nation</h1>
+                    </div>
+                    <div class="header-right">
+                        <div class="search-style-2">
+                            <form action="#">
+                                <input type="text" placeholder="Search for items...">
+                            </form>
+                        </div>
+                        <div class="header-action-right">
+                            <div class="header-action-2">
+                                <div class="header-action-icon-2">
+                                    <a href="#">
+                                        <img class="svgInject" alt="Bulk" src="assets/imgs/theme/icons/icon-heart.svg">
+                                        <!-- <span class="pro-count blue">4</span> -->
+                                    </a>
+                                </div>
+                                <div class="header-action-icon-2">
+                                    <a class="mini-cart-icon" href="/getCart">
+                                        <img alt="Bulk" src="assets/imgs/theme/icons/icon-cart.svg">
+                                        <!-- <span class="pro-count blue"></span> -->
+                                    </a>
+
+
+                                    
+                                </div>
+                                <div>
+                                    
+                                    <% if (user) { %>
+                                        <div class="dropdown">
+                                            
+                                            <a href="#" class="sign-in-link"><%= user.username %></a>
+                                            <div class="dropdown-content" >
+                                                <a href="/userProfile">Profile</a>
+                                                <a href="/logout">Logout</a>
+                                            </div>
+                                        </div>
+                                    <% } else { %>
+                                        <div class="social-media">
+                                            <a href="/signup" class="social-icon">
+                                                <i class="fas fa-user"></i>
+                                            </a>
+                                        </div>
+
+                                        <!-- <a href="/signup">Signup / Login</a> -->
+                                    <% } %>
+                                
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-bottom header-bottom-bg-color sticky-bar">
+            <div class="container">
+                <div class="header-wrap header-space-between position-relative">
+                    <div class="logo logo-width-1 d-block d-lg-none">
+                        <!-- <a href="/">Bulk Nation</a> -->
+                        <h1 class="" >Bulk Nation</h1>
+                    </div>
+                    <div class="header-nav d-none d-lg-flex">
+                        <div class="main-categori-wrap d-none d-lg-block">
+                            <a class="categori-button-active" href="#">
+                                <span class="" style="margin-left: 170px;"></span> 
+                            </a>
+                            <div class="categori-dropdown-wrap categori-dropdown-active-large">
+                            </div>
+                        </div>
+                        <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
+                            <nav>
+                                <ul>
+                                    <li><a class="active" href="/">Home <i class="fi-rs-angle"></i></a>
+                                       
+                                    </li>
+                                    <li>
+                                        <a href="#">About</a>
+                                    </li>
+                                    <li><a href="/shopPage">Shop <i class="fi-rs-angle"></i></a>
+                                        
+                                    </li>
+                                    <!-- <li class="position-static"><a href="#">Mega menu <i class="fi-rs-angle"></i></a>
+                                       
+                                    </li> -->
+                                    <!-- <li><a href="#">Blog <i class="fi-rs-angle-down"></i></a> -->
+                        
+                                    </li>
+                                    <!-- <li><a href="#">Pages <i class="fi-rs-angle-down"></i></a>
+                                    </li> -->
+                                    <li>
+                                        <a href="#">Contact</a>
+                                    </li>
+                                    
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="hotline d-none d-lg-block">
+                        <!-- <p><i class="fi-rs-headset"></i><span>Hotline</span> 1900 - 888 </p> -->
+                    </div>
+                    <!-- <p class="mobile-promotion">Happy <span class="text-brand">Mother's Day</span>. Big Sale Up to 40%</p> -->
+                    <div class="header-action-right d-block d-lg-none">
+                        <div class="header-action-2">
+                            <div class="header-action-icon-2">
+                                <a href="#">
+                                    <img alt="Evara" src="assets/imgs/theme/icons/icon-heart.svg">
+                                    <!-- <span class="pro-count white">4</span> -->
+                                </a>
+                            </div>
+                            <div class="header-action-icon-2">
+                                <a class="mini-cart-icon" href="#">
+                                    <img alt="Evara" src="assets/imgs/theme/icons/icon-cart.svg">
+                                    <!-- <span class="pro-count white">2</span> -->
+                                </a>
+                               
+                            <div class="header-action-icon-2 d-block d-lg-none">
+                                <div class="burger-icon burger-icon-white">
+                                    <span class="burger-icon-top"></span>
+                                    <span class="burger-icon-mid"></span>
+                                    <span class="burger-icon-bottom"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const dropdown = document.querySelector(".dropdown .sign-in-link");
+    const dropdownContent = document.querySelector(".dropdown .dropdown-content");
+
+    dropdown.addEventListener("click", function (e) {
+        e.preventDefault();
+        dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+    });
+
+    // Close dropdown if clicked outside
+    window.addEventListener("click", function (e) {
+        if (!dropdown.contains(e.target)) {
+            dropdownContent.style.display = "none";
+        }
+    });
+});
+
+
+    </script>

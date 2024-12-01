@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-save {
+            background-color: #ffc107;
+            color: black;
+            border: none;
+        }
+        .btn-save:hover {
+            background-color: #e0ac07;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .nav-tabs .nav-link.active {
+            border-bottom: 3px solid #ffc107;
+        }
+        .profile-card {
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+            color: black;
+            border: none;
+        }
+        .edit-btn:hover {
+            background-color: #e0ac07;
+        }
+        hr {
+            border-top: 1px solid #e6e6e6;
+        }
+        .nav-link:hover{
+            color: orange;
+        }
+        .nav-link.active {
+         color: orange; 
+        font-weight: bold; 
+        }
+
+
+
+
+
+
+
+
+
+        /* Style for the Addresses Section */
+.address-card {
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.address-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.address-card h5 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.address-card p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.address-card .d-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.address-card .btn {
+    background-color: #e0ac07;
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.address-card .btn:hover {
+    background-color: #ffc107;
+}
+
+.address-card .btn.text-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.address-card .btn.text-danger:hover {
+    background-color: #e53935;
+}
+
+/* Style for the "My Addresses" heading */
+.mt-4 h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+    </style>
+</head>
+<body>
+
+<!-- Navbar with Hamburger Menu -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">User Profile</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/userProfile">My Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">My Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/userAdresses">My Addresses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Mb Cash</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Saved Cards</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Profile Card -->
+<div class="container">
+    <div class="profile-card mx-auto">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold">Hi <%=user.username%></h2>
+            <div>
+                <button class="btn edit-btn" type="button" id="editProfileBtn"><a style="text-decoration: none;"   href="">Edit Profile</a></button>
+                <!-- <button class="btn edit-btn" type="button" id="editProfileBtn"><a style="text-decoration: none;"   href="/addAddress">Add Address</a></button> -->
+               
+            </div>
+           
+        </div>
+        <hr>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <p class="text-muted mb-1">Full Name</p>
+                <h5 id="name"><%=user.username%></h5>
+            </div>
+            <div class="col-md-6">
+                <p class="text-muted mb-1">Phone No</p>
+                <h5 id="phone"><%=user.phone%></h5>
+            </div>
+        </div>
+        <hr>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <p class="text-muted mb-1">Email</p>
+                <h5 id="email"><%=user.email%></h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal profile update -->
+<div class="modal fade" id="changeProfileModal" tabindex="-1" aria-labelledby="changeProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeProfileModalLabel">Change Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Change Profile Form -->
+                <form id="profileForm">
+                    <div class="mb-3">
+                        <div id="error1" style="color:red;"></div>
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="newName" name="name" placeholder="Enter your full name">
+                    </div>
+                    <!-- <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="newEmail" name="phone" placeholder="Enter your email">
+                    </div> -->
+                    <div class="mb-3">
+                        <div id="error2" style="color:red;"></div>
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="newPhone" name="email" placeholder="Enter your phone number">
+                    </div>
+                    <div class="mb-3">
+                        <input type="hidden" id="userId" value="<%=user.id%>">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-save" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap JS -->
+ <!-- Add SweetAlert2 Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Remove 'active' from all links
+            navLinks.forEach(nav => nav.classList.remove('active'));
+            // Add 'active' to the clicked link
+            link.classList.add('active');
+        });
+    });
+});
+
+    const oldname = document.getElementById("name").innerText;
+    const oldphone = document.getElementById("phone").innerText;
+    // const oldemail = document.getElementById("email").innerText;
+    const error1 = document.getElementById("error1");
+	const error2 = document.getElementById("error2");
+
+
+// show modal
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("working");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+    const saveChangesBtn = document.getElementById("saveChangesBtn");
+    
+    
+    editProfileBtn.addEventListener('click', (event) => {
+        console.log("show modal")
+        event.preventDefault(); 
+        const name = document.getElementById("newName").value = oldname;
+        const phone = document.getElementById("newPhone").value = oldphone
+        // const email = document.getElementById("newEmail").value = oldemail;
+
+        const modal = new bootstrap.Modal(document.getElementById('changeProfileModal'));
+        modal.show();
+    });
+
+    saveChangesBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    // Get input values
+    const name = document.getElementById("newName").value;
+    const phone = document.getElementById("newPhone").value;
+    const userId = document.getElementById("userId").value;
+
+    let isNameValid = true;
+    let isPhoneValid = true;
+
+    // Validation elements
+    const error1 = document.getElementById("error1"); // Name error element
+    const error2 = document.getElementById("error2"); // Phone error element
+
+    // Name validation
+    const namePattern = /^[A-Za-z\s]+$/; // Only letters and spaces
+if (name.trim() === "") {
+    // Check for empty input
+    error1.style.display = "block";
+    error1.innerHTML = "Please enter a valid name.";
+    isNameValid = false;
+} else if (!namePattern.test(name)) {
+    // Check if input contains only letters and spaces
+    error1.style.display = "block";
+    error1.innerHTML = "Name can only contain letters and spaces.";
+    isNameValid = false;
+} else {
+    // Input is valid
+    error1.style.display = "none";
+    error1.innerHTML = "";
+    isNameValid = true;
+}
+
+
+    // Phone validation
+    const phonePattern = /^\+?[0-9]{10}$/; // Matches 10-digit phone number optionally starting with '+'
+    if (!phonePattern.test(phone)) {
+        error2.style.display = "block";
+        error2.innerHTML = "Phone number should be a valid 10-digit number";
+        isPhoneValid = false;
+    } else {
+        error2.style.display = "none";
+        error2.innerHTML = "";
+        isPhoneValid = true;
+    }
+
+    // If both validations pass, proceed with fetch request
+    if (isNameValid && isPhoneValid) {
+        console.log(name,phone,userId);
+        fetch("/updateProfile", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, phone, userId }),
+        })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Failed to update profile");
+            }
+        })
+        .then((data) => {
+            console.log("Profile updated successfully:", data);
+
+            // Update displayed profile information
+            document.getElementById("name").innerText = name;
+            document.getElementById("phone").innerText = phone;
+
+            // Hide the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('changeProfileModal'));
+            modal.hide();
+
+            // Show success alert
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated',
+                text: 'Your profile has been updated successfully!',
+                confirmButtonColor: '#ffc107',
+            });
+        })
+        .catch((error) => {
+            console.error("Error updating profile:", error);
+
+            // Show error alert
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: 'An error occurred while updating your profile. Please try again.',
+                confirmButtonColor: '#d33',
+            });
+        });
+    }
+});
+
+    
+});
+</script>
+</body>
+</html>

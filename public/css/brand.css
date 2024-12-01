@@ -1,0 +1,17 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .sidebar h2 {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .table-responsive {
+    margin-top: 20px;
+  }
+  
+  .btn {
+    margin-right: 5px;
+  }
+  

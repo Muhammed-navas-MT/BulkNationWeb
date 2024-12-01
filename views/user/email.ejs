@@ -1,0 +1,100 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Input Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Body Styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FFA500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Email Container */
+.email-container {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    width: 350px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo Styling */
+.email-logo img {
+    width: 50px;
+    margin: 15px 0;
+}
+
+/* Text Styling */
+h1 {
+    color: #333;
+    margin: 0;
+}
+
+p {
+    color: #666;
+    margin: 15px 0;
+}
+
+/* Email Input Field */
+.email-input {
+    width: 100%;
+    padding: 10px;
+    margin: 20px 0;
+    border: 2px solid #FFA500;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.email-input:focus {
+    border-color: #e69500;
+    box-shadow: 0 0 5px #e69500;
+}
+
+/* Submit Button */
+.submit-btn {
+    background: #FFA500;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background: #e69500;
+}
+
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h1>Forgot Password</h1>
+        <div class="email-logo">
+            <img src="assets/imgs/slider/email.webp" alt="Email Logo">
+        </div>
+        <p>Enter your email address to reset your password.</p>
+        <form method="post" action="/foget-email-valid">
+            <input type="email" placeholder="Enter your email" name="email" class="email-input" required>
+            <button type="submit" class="submit-btn">Send Reset Link</button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+
