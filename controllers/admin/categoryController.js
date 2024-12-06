@@ -31,13 +31,14 @@ const categoryInfo = async(req,res)=>{
 };
 
 const addCategory = async (req, res) => {
-    console.log("Request received");
   
     const { name, description } = req.body;
     console.log(name, description);
   
     try {
-      const existingCategory = await Category.findOne({ name });
+    const existingCategory = await Category.findOne({
+        name: { $regex: `^${name}$`, $options: "i" },
+    });
       console.log(existingCategory);
   
       if (existingCategory) {
@@ -162,7 +163,8 @@ const editCategory = async (req,res)=>{
   try {
     const id = req.params.id;
     const {categoryName,description} =req.body;
-    const existingCategory = await Category.findOne({name:categoryName});
+    const existingCategory = await Category.findOne({ name: { $regex: `^${categoryName}$`, $options: "i" } });
+    // const existingCategory = await Category.findOne({name:categoryName});
     
     if(existingCategory){
       return res.status(400).redirect(`/admin/editCategory?msg=category already exists&id=${existingCategory._id}`);

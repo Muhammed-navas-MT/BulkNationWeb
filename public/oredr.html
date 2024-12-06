@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #FFB534, #FBF6EE);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .money-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .money {
+            position: absolute;
+            font-size: 24px;
+            color: #a1921a;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .card {
+            background-color: #FBF6EE;
+            border: none;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            fill: #FFB534;
+        }
+
+        .details {
+            background-color: rgba(255, 181, 52, 0.1);
+        }
+
+        .detail-label {
+            color: #FFB534;
+        }
+
+        .detail-value {
+            color: #FFB534;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #FFB534;
+            border-color: #FFB534;
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #e6a02f;
+            border-color: #e6a02f;
+        }
+
+        .btn-outline-primary {
+            color: #FFB534;
+            border-color: #FFB534;
+        }
+
+        .btn-outline-primary:hover, .btn-outline-primary:focus {
+            background-color: #FFB534;
+            color: #FBF6EE;
+        }
+    </style>
+</head>
+<body>
+    <div class="money-rain" aria-hidden="true">
+        <!-- Money symbols will be dynamically added here -->
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg">
+                    <div class="card-body text-center p-5">
+                        <svg class="success-icon mb-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0a12 12 0 1012 12A12.014 12.014 0 0012 0zm6.927 8.2l-6.845 9.289a1.011 1.011 0 01-1.43.188l-4.888-3.908a1 1 0 111.25-1.562l4.076 3.261 6.227-8.451a1 1 0 111.61 1.183z"/>
+                        </svg>
+                        <h1 class="card-title mb-4" style="color: lightgreen;">Payment Successful</h1>
+                        <div class="details rounded p-4 mb-4">
+                            <div class="row mb-3">
+                                <div class="col-6 text-start detail-label">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="me-2">
+                                        <path d="M21 4H3C1.89543 4 1 4.89543 1 6V18C1 19.1046 1.89543 20 3 20H21C22.1046 20 23 19.1046 23 18V6C23 4.89543 22.1046 4 21 4Z" stroke="#FFB534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M1 10H23" stroke="#FFB534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Transaction ID
+                                </div>
+                                <div class="col-6 text-end detail-value">MB-9876543</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-start detail-label">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="me-2">
+                                        <path d="M12 1V23" stroke="#FFB534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M17 5H9.5C8.57174 5 7.6815 5.36875 7.02513 6.02513C6.36875 6.6815 6 7.57174 6 8.5C6 9.42826 6.36875 10.3185 7.02513 10.9749C7.6815 11.6313 8.57174 12 9.5 12H14.5C15.4283 12 16.3185 12.3687 16.9749 13.0251C17.6313 13.6815 18 14.5717 18 15.5C18 16.4283 17.6313 17.3185 16.9749 17.9749C16.3185 18.6313 15.4283 19 14.5 19H6" stroke="#FFB534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                                    Amount Paid
+                                </div>
+                                <div class="col-6 text-end detail-value">₹4,999</div>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-lg w-100 mb-3">View Order Details</a>
+                        <a href="#" class="btn btn-outline-primary btn-lg w-100">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function createMoneySymbol() {
+            const money = document.createElement('div');
+            money.textContent = '₹';
+            money.className = 'money';
+            money.style.left = Math.random() * 100 + 'vw';
+            money.style.animationDuration = Math.random() * 2 + 3 + 's';
+            money.style.opacity = Math.random();
+            money.style.fontSize = Math.random() * 20 + 10 + 'px';
+            
+            document.querySelector('.money-rain').appendChild(money);
+            
+            setTimeout(() => {
+                money.remove();
+            }, 5000);
+        }
+
+        setInterval(createMoneySymbol, 100);
+    </script>
+</body>
+</html>

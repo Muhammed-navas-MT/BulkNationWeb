@@ -8,6 +8,7 @@ const profileController = require("../controllers/user/profileController");
 const cartController = require("../controllers/user/cartController");
 const shopController = require("../controllers/user/shopController");
 const checkoutController = require("../controllers/user/checkoutController");
+const orderController = require("../controllers/user/orderController");
 
 
 router.get("/pageNotFound",userControllor.pageNotFound);
@@ -65,51 +66,47 @@ router.get("/sortProductZ-A",shopController.sortZToA);
 router.get("/popularityProducts",shopController.popularityProducts);
 router.get("/latestProduct",shopController.latestProduct);
 router.get("/categotySort",shopController.categotySort);
-router.get("/checkout",userAuth.userAuth,checkoutController.getcartPage);
+router.get("/checkout",userAuth.userAuth,checkoutController.getcheckoutPage);
+router.post("/checkout",userAuth.userAuth,checkoutController.postCheckout);
+router.get("/orderComform",checkoutController.orderComform);
+router.get('/products/search',shopController.searchProducts);
 
-router.post('/checkout', (req, res) => {
-    const { address, products, subtotal, total } = req.body;
-
-    console.log('Address:', address);
-    console.log('Products:', products);
-    console.log('Subtotal:', subtotal);
-    console.log('Total:', total);
-
-    // Process the order (e.g., save to database, initiate payment)
-    res.status(200).json({ message: 'Order placed successfully!' });
-});
+// Order management
+router.get("/orderDetails",userAuth.userAuth,orderController.getOrderPage);
+router.get("/singeOrder",userAuth.userAuth,orderController.singleOrder);
+router.post("/cancelOrder/:id",userAuth.userAuth,orderController.cancelOrder);
 
 
-router.post('/cart/update-quantity', async (req, res) => {
-    const { productId, action } = req.body;
-    try {
-        // Fetch product and cart details
-        const product = await Product.findById(productId);
-        const cart = req.session.cart; // Assume cart is stored in session
+// router.post('/cart/update-quantity', async (req, res) => {
+//     const { productId, action } = req.body;
+//     try {
+//         // Fetch product and cart details
+//         const product = await Product.findById(productId);
+//         const cart = req.session.cart; // Assume cart is stored in session
 
-        // Update quantity logic
-        const cartItem = cart.items.find(item => item.productId === productId);
-        if (!cartItem) return res.status(404).send({ message: "Product not found in cart" });
+//         // Update quantity logic
+//         const cartItem = cart.items.find(item => item.productId === productId);
+//         if (!cartItem) return res.status(404).send({ message: "Product not found in cart" });
 
-        if (action === 'increase' && cartItem.quantity < product.quantity) {
-            cartItem.quantity += 1;
-            console.log("+ 1");
-        } else if (action === 'decrease' && cartItem.quantity > 1) {
-            cartItem.quantity -= 1;
-            console.log("-1");
-        } else {
-            return res.status(400).send({ message: "Invalid action or quantity limit reached" });
-        }
+//         if (action === 'increase' && cartItem.quantity < product.quantity) {
+//             cartItem.quantity += 1;
+//             console.log("+ 1");
+//         } else if (action === 'decrease' && cartItem.quantity > 1) {
+//             cartItem.quantity -= 1;
+//             console.log("-1");
+//         } else {
+//             return res.status(400).send({ message: "Invalid action or quantity limit reached" });
+//         }
 
-        // Recalculate cart totals
-        cart.total = cart.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
-        req.session.cart = cart;
+//         // Recalculate cart totals
+//         cart.total = cart.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+//         req.session.cart = cart;
 
-        res.send({ message: 'Quantity updated successfully', cart });
-    } catch (error) {
-        res.status(500).send({ message: 'Failed to update quantity' });
-    }
-});
+//         res.send({ message: 'Quantity updated successfully', cart });
+//     } catch (error) {
+//         res.status(500).send({ message: 'Failed to update quantity' });
+//     }
+// });
 
 
 

@@ -53,6 +53,7 @@
                                 <!-- End Gallery -->
                             </div>
                             <div class="col-md-6 col-sm-12 col-xs-12">
+                                <div><%=error%></div>
                                 <div class="detail-info">
                                     <h2 class="title-detail"><%=product.productName%></h2>
                                     <div class="product-detail-rating">
@@ -400,43 +401,43 @@
             qtyInput.value = currentQty;
         }
 
-        async function addToWishlist(productId) {
-            try {
-                const response = await fetch('/add-to-wishlist', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ productId }),
-                });
+        // async function addToWishlist(productId) {
+        //     try {
+        //         const response = await fetch('/add-to-wishlist', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             body: JSON.stringify({ productId }),
+        //         });
 
-                const data = await response.json();
+        //         const data = await response.json();
 
-                if (!response.ok) {
-                    Swal.fire({
-                        title: 'Sorry',
-                        text: 'There is an error in adding to wishlist',
-                        icon: 'error',
-                        confirmButtonText: 'Okay'
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'Product added to wishlist',
-                        icon: 'success',
-                        confirmButtonText: 'Okay'
-                    });
-                }
-            } catch (error) {
-                console.error('Error adding product to wishlist:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'An unexpected error occurred. Please try again later.',
-                    icon: 'error',
-                    confirmButtonText: 'Okay'
-                });
-            }
-        }
+        //         if (!response.ok) {
+        //             Swal.fire({
+        //                 title: 'Sorry',
+        //                 text: 'There is an error in adding to wishlist',
+        //                 icon: 'error',
+        //                 confirmButtonText: 'Okay'
+        //             });
+        //         } else {
+        //             Swal.fire({
+        //                 title: 'Success',
+        //                 text: 'Product added to wishlist',
+        //                 icon: 'success',
+        //                 confirmButtonText: 'Okay'
+        //             });
+        //         }
+        //     } catch (error) {
+        //         console.error('Error adding product to wishlist:', error);
+        //         Swal.fire({
+        //             title: 'Error',
+        //             text: 'An unexpected error occurred. Please try again later.',
+        //             icon: 'error',
+        //             confirmButtonText: 'Okay'
+        //         });
+        //     }
+        // }
 
     
 </script>

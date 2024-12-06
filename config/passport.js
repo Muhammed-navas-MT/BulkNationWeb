@@ -35,7 +35,7 @@ async(accessToken,refereshToken,profile,done)=>{
 
 // store session user ID
 passport.serializeUser((user,done)=>{
-    done(null,user.id);
+    done(null,user);
 });
 
 // session nill nin user data fuch cheyith edukkanan

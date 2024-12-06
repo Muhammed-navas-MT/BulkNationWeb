@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Bulk Nation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-save {
+            background-color: #ffc107;
+            color: black;
+            border: none;
+        }
+        .btn-save:hover {
+            background-color: #e0ac07;
+        }
+        body {
+    font-family: Arial, sans-serif;
+    background-color: white; /* White to light orange shading */
+    margin: 0;
+    padding: 0;
+    color: #333; /* Default text color */
+}
+
+        .nav-tabs .nav-link.active {
+            border-bottom: 3px solid #ffc107;
+        }
+        .profile-card {
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+            color: black;
+            border: none;
+        }
+        .edit-btn:hover {
+            background-color: #e0ac07;
+        }
+        hr {
+            border-top: 1px solid #e6e6e6;
+        }
+        .nav-link:hover{
+            color: orange;
+        }
+        .nav-link.active {
+            color: orange; 
+            font-weight: bold; 
+        }
+        .table-bordered {
+            border: 2px solid orange;
+        }
+        .table-bordered th,
+        .table-bordered td {
+            border: 2px solid orange;
+            padding: 20px;
+        }
+
+
+/* General Styling for the Container with Specific ID */
+#specific-container {
+    text-align: center; /* Center content horizontally */
+    margin: 50px auto; /* Add spacing from top and bottom */
+    padding: 20px;
+    max-width: 600px;
+    background-color: white; /* White background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Styling for the Image */
+#specific-container .image-container img {
+    display: block; /* Ensures proper alignment */
+    margin: 0 auto 20px; /* Center image and add space below */
+    max-width: 100%; /* Responsive image */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Headline */
+#specific-container h2 {
+    font-size: 24px;
+    color: #ff8c00; /* Vibrant orange color */
+    margin-bottom: 10px;
+}
+
+/* Paragraph */
+#specific-container p {
+    font-size: 16px;
+    color: #555; /* Slightly darker text for better readability */
+    margin-bottom: 20px;
+}
+
+/* Call-to-Action Button */
+#specific-container .cta-button {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(to right, #ff8c00, #ff4500); /* Orange gradient */
+    border-radius: 5px; /* Rounded corners */
+    transition: background 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+#specific-container .cta-button:hover {
+    background: linear-gradient(to right, #ff4500, #ff8c00); /* Reverse gradient on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #specific-container {
+        padding: 15px;
+    }
+
+    #specific-container h2 {
+        font-size: 20px;
+    }
+
+    #specific-container p {
+        font-size: 14px;
+    }
+
+    #specific-container .cta-button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}
+
+
+        
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">Bulk Nation</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userProfile">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/orderDetails">My Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userAdresses">My Addresses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BN Cash</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Saved Cards</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <% if (orders.length === 0) { %>
+        <div id="specific-container">
+            <div class="image-container">
+                <img src="assets/imgs/banner/order.png" alt="Illustration of a person with an empty shopping cart" width="256" height="256">
+            </div>
+            <h2>No Orders!</h2>
+            <p>Looks like you haven't shopped anything yet.</p>
+            <a href="/shopPage" class="cta-button">Start Shopping</a>
+        </div>        
+    <% } else { %>
+    <!-- Orders Table -->
+    <div class="container mt-5">
+        <h2>My Orders</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="color: orange;">Order</th>
+                    <th style="color: orange;">Date</th>
+                    <th style="color: orange;">Status</th>
+                    <th style="color: orange;">Total</th>
+                    <th style="color: orange;">Quatity</th>
+                    <th style="color: orange;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+                    <% orders.forEach(order => { %>
+                        <tr>
+                            <td id="orderId"><%= order.orderId %></td>
+                            <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
+                            <td><%= order.status %></td>
+                            <td>₹<%= order.finalAmount %></td>
+                            <td>
+                                <% if (order.orderedItems && order.orderedItems.length > 0) { %>
+                                    <ul>
+                                        <% order.orderedItems.forEach(item => { %>
+                                            <li>
+                                                <strong>Name:</strong> <%= item.name %>
+                                               <br> <strong>Quantity:</strong> <%= item.quantity %>
+                                               <br> <strong>Price:</strong> ₹<%= item.price %>
+                                            </li>
+                                        <% }); %>
+                                    </ul>
+                                <% } else { %>
+                                    No items in this order
+                                <% } %>
+                                <td>
+                                    <button style="background-color: orange; border: #e0ac07; border-radius: 10px; height: 40px; width: 90px;"><a href="/singeOrder?id=<%= order.orderId %>" style="text-decoration: none;">View</a></button>
+                                    <br><br>
+                                    <button onclick="cancelOrder('<%= order.orderId %>')" style="background-color: orange; border: #e0ac07; border-radius: 10px; height: 40px; width: 90px;">
+                                        <span style="text-decoration: none;">Cancel</span>
+                                    </button>
+                                </td>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        async function cancelOrder(orderId) {
+            const orderIdd = document.getElementById("orderId").textContent;
+          console.log(orderIdd);
+    if (!orderId) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Invalid order ID.",
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to cancel this order?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, cancel it!",
+        cancelButtonText: "No, keep it",
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch(`/cancelOrder/${orderId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ status: "Cancelled" }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Cancelled!",
+                        text: result.message || "Order has been cancelled.",
+                    }).then(() => {
+                        location.reload(); // Reload the page to reflect the changes
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Failed!",
+                        text: result.error || "Could not cancel the order.",
+                    });
+                }
+            } catch (error) {
+                console.error("Error cancelling order:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "An error occurred while trying to cancel the order.",
+                });
+            }
+        }
+    });
+}
+    </script>    
+</body>
+</html>

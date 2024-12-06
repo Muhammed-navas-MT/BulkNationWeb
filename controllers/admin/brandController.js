@@ -51,7 +51,8 @@ const addBrand = async (req, res) => {
             return res.redirect("/admin/brands?error=File upload failed");
         }
 
-        const findBrand = await Brand.findOne({ brandName: brand });
+        // const findBrand = await Brand.findOne({ brandName: brand });
+        const findBrand = await Brand.findOne({ brandName: { $regex: `^${brand}$`, $options: "i" } });
         console.log(findBrand, brand, "already exists brand");
 
         if (findBrand) {
@@ -119,7 +120,8 @@ const updateBrand = async (req, res) => {
         const brandName = req.body.brandName;
         const image = req.file;
 
-        const findBrand = await Brand.findOne({ brandName: brandName });
+        // const findBrand = await Brand.findOne({ brandName: brandName });
+        const findBrand = await Brand.findOne({ brandName: { $regex: `^${brandName}$`, $options: "i" } });
         if (findBrand) {
             console.log("find brand");
             return res.status(400).json({ success: false, message: "Brand already exists" });

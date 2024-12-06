@@ -35,6 +35,11 @@
         background-color: #17a2b8;
         border-color: #17a2b8;
     }
+
+    .address-item.selected {
+    border: 2px solid #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    }
     @media (max-width: 768px) {
         .ship_detail, .order_review {
             padding: 15px;
@@ -44,6 +49,67 @@
 </style>
 <div class="mobile-header-active mobile-header-wrapper-style">
     <!-- Mobile header content remains the same as in the original file -->
+    <div class="mobile-header-active mobile-header-wrapper-style">
+        <div class="mobile-header-wrapper-inner">
+            <div class="mobile-header-top">
+                <div class="mobile-header-logo">
+                    <h1>Bulk Nation</h1>
+                    <!-- <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a> -->
+                </div>
+                <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
+                    <button class="close-style search-close">
+                        <i class="icon-top"></i>
+                        <i class="icon-bottom"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="mobile-header-content-area">
+                <div class="mobile-search search-style-3 mobile-header-border">
+                    <form action="#">
+                        <input type="text" placeholder="Search for items…">
+                        <button type="submit"><i class="fi-rs-search"></i></button>
+                    </form>
+                </div>
+                <div class="mobile-menu-wrap mobile-header-border">
+                    <div class="main-categori-wrap mobile-header-border">
+                        
+                    </div>
+                    <!-- mobile menu start -->
+                    <nav>
+                        <ul class="mobile-menu">
+                            
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="shop-grid-right.html">shop</a>
+                                
+                            </li>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega menu</a>
+                              
+                            </li>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="blog-category-fullwidth.html">Blog</a>
+                               
+                            </li>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Pages</a>
+                               
+                            </li>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Language</a>
+                            
+                            </li>
+                        </ul>
+                    </nav>
+                    <!-- mobile menu end -->
+                </div>
+                <div class="mobile-header-info-wrap mobile-header-border">
+                    <!-- <div class="single-mobile-header-info mt-30">
+                        <a  href="page-contact.html"> Our location </a>
+                    </div> -->
+                    <div class="single-mobile-header-info">
+                        <!-- <a href="page-login-register.html">Log In / Sign Up </a> -->
+                    </div>
+                </div>
+                <div class="mobile-social-icon">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <main class="main">
@@ -66,6 +132,17 @@
                     </div>
                     <div class="panel-collapse collapse coupon_form " id="coupon">
                         <!-- ... (keeping the existing coupon form) ... -->
+                        <!-- <div class="panel-body">
+                            <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
+                            <form method="post">
+                                <div class="form-group">
+                                    <input type="text" placeholder="Enter Coupon Code...">
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn  btn-md" name="login">Apply Coupon</button>
+                                </div>
+                            </form>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -78,14 +155,10 @@
                 <div class="col-md-6">
                     <div class="ship_detail">
                         <h4 class="mb-4">Shipping Details</h4>
+                        <%if(address.length>0){%>
                         <div class="address-list">
                             <% address.forEach(addr => { %>
                             <div class="address-item mb-4 p-4 border rounded bg-white">
-                                <!-- <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 class="m-0">Home Address</h5>
-                                    <span class="badge badge-default">Default</span>
-                                </div> -->
-                              
                                 <div class="address-container">
                                     <div class="address-details">
                                         <form action="" method="post"></form>
@@ -122,14 +195,16 @@
                                   </div>
                                   
                                   <div class="mt-3">
-                                    <!-- <button class="btn btn-sm btn-edit me-2">Edit</button> -->
-                                    <button type="submit" class="btn btn-sm btn-ship">Ship to this address</button>
+                                    <button type="submit" id="addressButton" class="btn btn-sm btn-ship">Ship to this address</button>
                                   </div>                                  
                             </div>
                             <% }); %>
                             <!-- Add more address items if needed -->
+                            
                         </div>
-                        <button class="btn btn-sm btn-add-address mt-3">Add New Address</button>
+                        <%}else{%>
+                        <button class="btn btn-sm btn-add-address mt-3"><a href="/addaddress">Add New Address</a></button>
+                        <%}%>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -143,6 +218,7 @@
                                     <tr>
                                         <th colspan="2">Product</th>
                                         <th>Price</th>
+                                        <th style="display: none;">id</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -153,6 +229,7 @@
                                                     <img src="/uploads/re-image/<%= product[i].productImage[0] %>" alt="#" />
                                                 </td>
                                                 <td>
+                                                   
                                                     <h5>
                                                         <a href="#"><%= product[i].productName %></a>
                                                     </h5>
@@ -162,7 +239,8 @@
                                                         <span id="quantity" class="product-qty">Quantity: <%= quantity %> </span>
                                                     <% } %>                                                        
                                                 </td>
-                                                <td>₹<%= product[i].salePrice %></td>
+                                                <td  id="salePrice">₹<%= product[i].salePrice %></td>
+                                                <td style="display: none;" id="productId"><%= product[i]._id %></td>
                                             </tr>
                                         <% } %>
                                         <tr>
@@ -191,26 +269,49 @@
                         </div>
                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                         <div class="payment_method">
+                            <div class="mb-25">
+                                <h5>Payment</h5>
+                            </div>
                             <!-- ... (keeping the existing payment options) ... -->
+                            <div class="custome-radio">
+                                <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios3" checked="">
+                                <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" id="cash" aria-controls="bankTranfer">Cash On Delivery</label>
+                                <!-- <div class="form-group collapse in" id="bankTranfer">
+                                    <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
+                                </div> -->
+                            </div>
                         </div>
-                        <a href="#" class="btn btn-fill-out btn-block mt-30">Place Order</a>
+                        <button type="submit" id="order" class="btn btn-sm btn-ship">Place Order</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <script>
-    // Add event listeners to all "Ship to this address" buttons
-    document.querySelectorAll('.btn-ship').forEach((button, index) => {
-        button.addEventListener('click', async (e) => {
+    const cashOnDelivery  = document.querySelector("#cash").textContent;
+    let selectedAddress = null; 
+    let selectedAddressIndex = null; 
+
+   
+    document.querySelectorAll('#addressButton').forEach((button, index) => {
+        button.addEventListener('click', (e) => {
             e.preventDefault();
 
-            // Get the selected address item based on the button clicked
-            const addressItem = document.querySelectorAll('.address-item')[index];
+            
+            if (selectedAddressIndex !== null) {
+                document.querySelectorAll('.address-item')[selectedAddressIndex].classList.remove('selected');
+            }
 
-            // Extract the selected address details
-            const selectedAddress = {
+          
+            const addressItem = document.querySelectorAll('.address-item')[index];
+            addressItem.classList.add('selected'); 
+            selectedAddressIndex = index; 
+
+            selectedAddress = {
                 name: addressItem.querySelector('#name').value,
                 addressType: addressItem.querySelector('#address').value.split(',')[0].trim(),
                 city: addressItem.querySelector('#address').value.split(',')[1].trim(),
@@ -219,59 +320,95 @@
                 pincode: addressItem.querySelector('#pincode').value,
                 phone: addressItem.querySelector('#phone').value,
                 altPhone: addressItem.querySelector('#altPhone').value,
-                id: addressItem.querySelector('#id') ? addressItem.querySelector('#id').value : null
+                
             };
-
-            // Extract products
-            const productElements = document.querySelectorAll('.order_table tbody tr');
-            const products = Array.from(productElements).map(row => {
-                const productNameElement = row.querySelector('td:nth-child(2) h5 a');
-                const quantityElement = row.querySelector('.product-qty');
-                const priceElement = row.querySelector('td:last-child');
-
-                if (productNameElement && priceElement) {
-                    return {
-                        name: productNameElement.textContent.trim(),
-                        quantity: quantityElement ? parseInt(quantityElement.textContent.split(':')[1].trim()) : 1,
-                        price: parseFloat(priceElement.textContent.replace('₹', '').trim())
-                    };
-                }
-            }).filter(product => product);
-
-            // Get subtotal and total
-            const subtotal = parseFloat(document.querySelector('#subtotal').textContent.replace('₹', '').trim());
-            const total = subtotal; // Adjust if additional logic applies
-
-            // Payload
-            const payload = {
-                address: selectedAddress,
-                products,
-                subtotal,
-                total,
-            };
-
-            try {
-                // Send the selected address, products, subtotal, and total to the backend
-                const response = await fetch('/checkout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    alert(data.message); // Display a success message
-                } else {
-                    console.error('Failed to send the order details');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
+            Swal.fire({
+                icon: 'success',
+                title: 'Address Selected',
+                text: `You have selected an address for shipping.`,
+            });
         });
     });
+
+
+    document.querySelector('#order').addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        if (!selectedAddress) {
+            Swal.fire({
+                icon: 'error',
+                title: 'No Address Selected',
+                text: 'Please select a shipping address before placing the order.',
+            });
+            return;
+        }
+
+        const productElements = document.querySelectorAll('.order_table tbody tr');
+        const products = Array.from(productElements).map(row => {
+            const productNameElement = row.querySelector('td:nth-child(2) h5 a');
+            const quantityElement = row.querySelector('.product-qty');
+            const priceElement = row.querySelector('#salePrice');
+            const productIdElement = row.querySelector("#productId");
+
+            if (productNameElement && priceElement) {
+                return {
+                    name: productNameElement.textContent.trim(),
+                    quantity: quantityElement ? parseInt(quantityElement.textContent.split(':')[1].trim()) : 1,
+                    price: parseFloat(priceElement.textContent.replace('₹', '').trim()),
+                    id: productIdElement ? productIdElement.textContent.trim() : null
+                };
+            }
+        }).filter(product => product);
+
+
+        const subtotal = parseFloat(document.querySelector('#subtotal').textContent.replace('₹', '').trim());
+        const total = subtotal; 
+
+        // Payload
+        const payload = {
+            address: selectedAddress,
+            products,
+            subtotal,
+            total,
+            paymentMethod:cashOnDelivery,
+        };
+
+        try {
+            const response = await fetch('/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                // Swal.fire({
+                //     icon: 'success',
+                //     title: 'Order Placed',
+                //     text: data.message,
+                // });
+                window.location.href=`/orderComform?id=${data.orderId}`
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Order Failed',
+                    text: data.message,
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred. Please try again later.',
+            });
+            console.error('Error:', error);
+        }
+    });
 </script>
+
 
 
 

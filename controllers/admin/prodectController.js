@@ -7,6 +7,7 @@ const path = require("path");
 const Product = require("../../models/productSchema");
 const { status } = require("init");
 const { query } = require("express");
+const { error } = require("console");
 
 
 
@@ -37,16 +38,16 @@ const addprodect = async (req, res) => {
         const prodects = req.body;
 
         // Check if product already exists
-        const prodectexists = await Product.findOne({
-            productName: prodects.productName,
+        // const prodectexists = await Product.findOne({
+        //     productName: prodects.productName,
+        // });
+        const existsProduct = await Product.findOne({
+            productName: { $regex: `^${prodects.productName}$`, $options: "i" },
+            _id: { $ne: id },
         });
 
         if (!prodectexists) {
-            console.log("Product does not exist");
             const images = [];
-
-            console.log("files reports and file length", req.files, req.files.length);
-
             if (req.files && req.files.length > 0) {
                 for (let i = 0; i < req.files.length; i++) {
                     const originalImagePath = req.files[i].path; 
@@ -64,7 +65,6 @@ const addprodect = async (req, res) => {
             }
 
             const categoryId = await Category.findOne({ name: prodects.category });
-            console.log("category id", categoryId);
 
             if (!categoryId) {
                 return res.status(400).json("Invalid category name");
@@ -238,10 +238,14 @@ const updateproduct = async(req,res)=>{
        const product = await Product.findOne({_id:id});
        const data = req.body;
 
-       const existsProduct = await Product.findOne({
-        productName:data.productName,
-        _id:{$ne:id}
-       });
+    //    const existsProduct = await Product.findOne({
+    //     productName:data.productName,
+    //     _id:{$ne:id}
+    //    });
+    const existsProduct = await Product.findOne({
+        productName: { $regex: `^${data.productName}$`, $options: "i" },
+        _id: { $ne: id },
+    });
        const category = await Category.find({isListed:true});
         const brand = await Brand.find({isBlock:false});
 
@@ -281,6 +285,26 @@ const updateproduct = async(req,res)=>{
         console.log("edit product error",erro);
         return res.redirect("/admin/error");
     }
+};
+
+
+const deleteImage = async(req,res)=>{
+    try {
+        const {imageIdToServer,productIdToServer}= req.body;
+        const product = await Product.findByIdAndUpdate(productIdToServer,{$pull:{productImage:imageIdToServer}});
+        const imagePath = path.join("public","uploads","re-image",imageIdToServer);
+        if(fs.existsSync(imagePath)){
+            await fs.unlinkSync(imagePath);
+            console.log(`image ${imageIdToServer} Delete successfully`);
+            res.status(200).json({success:true,message:"Image updated successfully"})
+        }else{
+            console.log(`image not found ${imageIdToServer}`);
+            res.status(400).json({success:false,message:"Image Path not found"})
+        }
+    } catch (error) {
+        console.log("single image delete error",error);
+        res.status(500).json({success:false,message:"Internal Server Error"})
+    }
 }
 
 
@@ -298,4 +322,5 @@ module.exports = {
     unblockProduct,
     editProduct,
     updateproduct,
+    deleteImage,
 }

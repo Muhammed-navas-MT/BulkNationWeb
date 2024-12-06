@@ -8,6 +8,7 @@ const userAuth =(req,res,next)=>{
             if(data && !data.isBlocked){
                 next();
             }else{
+                req.session.user = null;
                 return res.redirect("/signup");
             }
         })
@@ -24,18 +25,12 @@ const userAuth =(req,res,next)=>{
 
 const adminAuth = (req,res,next)=>{
     console.log("middleware working");
-    User.findOne({isAdmin:true})
-    .then(data=>{
+    const data = req.session.admin;
         if(data){
             next();
         }else{
             res.redirect("/admin/login");
         }
-    })
-    .catch(error=>{
-    console.log("Error in adminAuth middleware",error);
-    res.status(500).send("Internal Server Error");
-    })
 }
 
 

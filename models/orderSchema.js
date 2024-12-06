@@ -9,11 +9,16 @@ const orderSchema = new Schema({
         default:()=>uuidv4(),
         unique:true
     },
+    userId:{
+        type:Schema.Types.ObjectId,
+        ref:"User",
+        required:true
+    },
     orderedItems:[{
-        prodect:{
-            type:Schema.Types.ObjectId,
-            ref:"Product",
+        name:{
+            type:String,
             required:true
+
         },
         quantity:{
             type:Number,
@@ -22,7 +27,12 @@ const orderSchema = new Schema({
         price:{
             type:String,
             default:0
-        }
+        },
+        id:{
+            type:Schema.Types.ObjectId,
+            ref:"Product",
+            required:true
+        },
     }],
     totalPrice:{
         type:Number,
@@ -36,18 +46,10 @@ const orderSchema = new Schema({
         type:String,
         required:true
     },
-    address:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        required:true
-    },
-    invoiceDate:{
-        type:Date
-    },
     status:{
         type:String,
         required:true,
-        enum:["pending","prossing","shipping","Delivered","Cancelled","Return Request","Returned"],
+        enum:["pending","Processing","Shipped","Delivered","Cancelled","Return Request","Returned"],
     },
     createdOn:{
         type:Date,
@@ -57,7 +59,50 @@ const orderSchema = new Schema({
     couponApplied:{
         type:Boolean,
         default:false
-    }
+    },
+    shippingAddress:{
+      
+        name:{
+            type:String,
+            required:true
+        },
+        addressType:{
+            type:String,
+            required:true
+        },
+        city:{
+            type:String,
+            required:true
+        },
+        state:{
+            type:String,
+            required:true
+        },
+        landmark:{
+            type:String,
+            required:true
+        },
+       
+        pincode:{
+            type:Number,
+            required:true
+        },
+        phone:{
+            type:String,
+            required:true
+        },
+        altPhone:{
+            type:String,
+        },
+    
+    },
+    paymentMethod:{
+        type:String,
+        
+     },
+     payment_status:{
+         type:String,
+     },
 });
 
 const Order = mongoose.model("Order",orderSchema);

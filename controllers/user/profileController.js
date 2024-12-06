@@ -178,19 +178,10 @@ const userProfile = async(req,res)=>{
 };
 
 
-// const getChangeProfile = async(req,res)=>{
-//     try {
-//         res.render("changeProfile");
-//     } catch (error) {
-//         res.redirect("/pageNotFound");
-//     }
-// };
-
 const updateProfile = async(req,res)=>{
     console.log("fine");
     try {
         const {name,phone,userId} = req.body;
-        console.log(name)
         
         const findUser = await User.findByIdAndUpdate(
             {_id:userId},
@@ -202,7 +193,6 @@ const updateProfile = async(req,res)=>{
             return res.status(404).json({success:false,message:"User not found"});
         }
 
-        // res.json({success:true,message:"update skuccessfully"});
     } catch (error) {
         console.error("profile update error",error.message);
         res.json({success:false,message:"Internal server error"});
@@ -213,7 +203,6 @@ const getAddressPage =async(req,res)=>{
     try {
         const userId = req.session.user._id;
         const addressData = await Address.findOne({userId:userId})
-        console.log(addressData);
         return res.render("displayaddresses",{userAddress:addressData})
     } catch (error) {
         console.log("get address page error",error.message);
@@ -232,7 +221,6 @@ const addAddress = async(req,res)=>{
 
 const postAddAddress = async(req,res)=>{
     try {
-        console.log("ivide athi");
         const userId = req.session.user._id;
         const userData = await User.findOne({_id:userId});
         const {name,phone,addressType,city,state,landMark,pincode,altPhone} = req.body;

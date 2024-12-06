@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Order List</title>
+  <!-- Add your CSS links here -->
+  <link rel="stylesheet" href="/path/to/bootstrap.css">
+  <link rel="stylesheet" href="/path/to/custom-styles.css">
+  <style>
+    /* General Reset */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+/* Header */
+header {
+  background-color: #343a40;
+  color: white;
+  padding: 10px 20px;
+}
+
+header .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+header .nav-link {
+  color: #ddd;
+  margin-left: 10px;
+}
+
+header .nav-link:hover {
+  color: #fff;
+}
+
+/* Footer */
+footer {
+  background-color: #343a40;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+/* Content Section */
+.content-main {
+  padding: 20px;
+}
+
+.content-header {
+  background-color: #fff;
+  padding: 15px 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.content-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.content-main p {
+  margin: 0;
+  color: #555;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-outline-secondary {
+  background-color: transparent;
+  color: #6c757d;
+  border: 1px solid #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+/* Form Controls */
+form .form-control {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+form .form-select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Card */
+.card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table .badge {
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border-radius: 12px;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  text-align: center;
+}
+
+.alert-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.alert-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.alert-info {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.alert-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.alert-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.alert-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.alert-dark {
+  background-color: #343a40;
+  color: #fff;
+}
+
+  </style>
+</head>
+<body>
+  <header class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/admin">Admin Panel</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="/admin/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/orders">Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/products">Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/users">Users</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <section class="content-main">
+    <div class="content-header d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="content-title">Order List</h2>
+        <p>Manage and track all customer orders efficiently.</p>
+      </div>
+      <div>
+        <form class="d-flex" action="/admin/orders" method="get">
+          <input
+            type="text"
+            name="name"
+            placeholder="Search by name or order ID"
+            class="form-control bg-white me-2"
+          />
+          <button type="submit" class="btn btn-primary">
+            <i class="material-icons md-search"></i> Search
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <header class="card-header d-flex justify-content-between align-items-center">
+        <h5>Filter Orders</h5>
+        <form class="d-flex" action="/admin/orders" method="get">
+          <div class="me-2">
+            <select name="status" class="form-select">
+              <option value="">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Processing">Processing</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+              <option value="Return Request">Return Request</option>
+              <option value="Returned">Returned</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+      </header>
+
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>#ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Static row example -->
+              <tr>
+                <td>#123456</td>
+                <td>John Doe</td>
+                <td>johndoe@example.com</td>
+                <td>₹1200.00</td>
+                <td>
+                  <span class="badge rounded-pill alert-success">Delivered</span>
+                </td>
+                <td>01/12/2024</td>
+                <td>
+                  <div class="btn-group">
+                    <a
+                      href="/admin/order-details?id=123456"
+                      class="btn btn-sm btn-outline-primary"
+                      >View</a
+                    >
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Manage
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Processing</a></li>
+                      <li><a class="dropdown-item" href="#">Shipped</a></li>
+                      <li><a class="dropdown-item" href="#">Cancelled</a></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <!-- Additional rows can be duplicated or modified similarly -->
+              <tr>
+                <td colspan="7" class="text-center">No orders found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-dark text-white text-center py-3">
+    <p>&copy; 2024 Admin Panel. All rights reserved.</p>
+  </footer>
+
+  <!-- Add your JS scripts here -->
+  <script src="/path/to/bootstrap.bundle.js"></script>
+  <script src="/path/to/custom-scripts.js"></script>
+</body>
+</html>

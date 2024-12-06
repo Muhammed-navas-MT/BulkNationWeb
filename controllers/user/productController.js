@@ -15,6 +15,7 @@ const productDetails = async(req,res)=>{
         const productOffer = product.productOffer || 0;
         const totalOffer = categoryOffer + productOffer;
         const products = await Product.find({ category: findCategory });
+        const error = req.query.error || "";
         console.log(findCategory)
         res.render("productDetails",{
             // user:userData,
@@ -25,6 +26,7 @@ const productDetails = async(req,res)=>{
             category:findCategory,
             flavor:product.flavor,
             similar:products,
+            error :error,
         })
     } catch (error) {
         console.log("details page error",error.message)

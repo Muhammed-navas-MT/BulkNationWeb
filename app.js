@@ -7,6 +7,7 @@ const env = require("dotenv").config()
 const passport = require("./config/passport")
 const db=require("./config/db");
 const exp = require("constants");
+const passportToUser = require('./middlewares/passportToUser').passportToUser
 db();
 
 
@@ -28,7 +29,7 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(passportToUser)
 const userRouter=require("./routers/userRouter");
 const adminRouter =require("./routers/adminRouter")
 

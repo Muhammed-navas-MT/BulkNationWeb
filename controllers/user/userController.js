@@ -26,8 +26,9 @@ const pageNotFound=async (req,res)=>{
 // load home page
 const loadHomePage = async (req, res) => {
 
-    try {
-        const user = req.session.user;
+    try {console.log(req.session)
+
+        const user = req.session.user || req.session?.passport?.user;
         const categories = await Category.find({ isListed: true });
         const products = await Product.find({
             isBlocked: false,
@@ -237,6 +238,7 @@ const verifyLogin = async (req,res)=>{
 const loguot = async (req,res)=>{
     try {
         req.session.user = null;
+        req.session.passport = null;
         return res.redirect("/");
     } catch (error) {
         

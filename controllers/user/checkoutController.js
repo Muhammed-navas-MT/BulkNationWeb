@@ -2,60 +2,49 @@ const User = require("../../models/userSchema");
 const Product = require("../../models/productSchema");
 const Cart = require("../../models/cartSchema");
 const Address = require("../../models/addressSchema");
+const Order = require('../../models/orderSchema');
 const { compareSync } = require("bcrypt");
 
 
-const getcartPage = async (req, res) => {
+const getcheckoutPage = async (req, res) => {
     console.log("Fetching cart details...");
     try {
         const user = req.session.user;
         const productId = req.query.id || null;
-        const quantity = parseInt(req.query.quantity) || 1; // Ensure quantity is a number
-        console.log("Quantity:", quantity);
+        const quantity = parseInt(req.query.quantity) || 1; 
 
-        // Redirect to login if no user session exists
         if (!user) {
             return res.redirect("/login");
         }
 
         const address = await Address.findOne({userId:user._id});
-        console.log(address.address);
-
         if (!productId) {
-            // Fetch cart details with populated product information
             const cart = await Cart.findOne({ userId: user._id }).populate("items.productId");
 
-            // If the cart is empty or does not exist
             if (!cart || !cart.items || cart.items.length === 0) {
-                return res.render("checkout", { user, product: [], subtotal: 0 ,quantity:null,address:address.address});
+                return res.redirect("/");
             }
 
-            // Map the cart items to include necessary product details
             const products = cart.items.map(item => {
-                const product = item.productId; // Populated product details
-                const productImage = product?.productImage || []; // Default to an empty array if no images exist
+                const product = item.productId; 
+                const productImage = product?.productImage || []; 
                 return {
                     _id: product._id,
                     productName: product.productName,
-                    productImage: productImage.length > 0 ? productImage : ["default-image.jpg"], // Fallback image
-                    salePrice: product.salePrice || 0, // Default to 0 if missing
-                    quantity: item.quantity || 1 // Default quantity to 1
+                    productImage: productImage.length > 0 ? productImage : ["default-image.jpg"], 
+                    salePrice: product.salePrice || 0, 
+                    quantity: item.quantity || 1 
                 };
             });
 
-            // Calculate subtotal
             const subtotal = products.reduce((sum, item) => {
                 return sum + item.salePrice * item.quantity;
             }, 0);
 
-            console.log("Cart details with subtotal:", products, subtotal);
-
-            // Render the checkout page with populated data
             return res.render("checkout", { user, product: products, subtotal ,quantity:null,address:address.address});
         }
 
         if (productId) {
-            // Fetch specific product details when a product ID is provided
             const product = await Product.findById(productId);
             if (!product) {
                 return res.redirect("/pageNotFound");
@@ -84,7 +73,96 @@ const getcartPage = async (req, res) => {
 
 
 
+
+const postCheckout = async (req, res) => {
+    try {
+        const userId = req.session.user;
+
+        if (!userId) {
+            return res.redirect("/login");
+        }
+
+        const { address, products, subtotal, total, paymentMethod } = req.body;
+        console.log("products details in check out ",products)
+
+        if (!Array.isArray(products) || products.length === 0) {
+            return res.status(400).json({ success: false, message: "No products provided" });
+        }
+
+        const groupedProducts = products.reduce((acc, item) => {
+            acc[item.id] = acc[item.id] || { ...item, quantity: 0 };
+            acc[item.id].quantity += item.quantity;
+            return acc;
+        }, {});
+
+        for (let productId in groupedProducts) {
+            const item = groupedProducts[productId];
+            console.log("product id",productId)
+            const product = await Product.findById(productId); 
+
+            if (!product) {
+                return res.status(404).json({ success: false, message: `Product not found: ${productId}` });
+            }
+
+            if (product.quantity < item.quantity) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Not enough stock for product: ${product.name}`,
+                });
+            }
+
+
+            product.quantity -= item.quantity;
+            await product.save();
+        }
+
+
+        const newOrder = new Order({
+            userId: userId,
+            orderedItems: Object.values(groupedProducts),
+            shippingAddress: address,
+            totalPrice: subtotal,
+            finalAmount: total,
+            status: "pending",
+            paymentMethod: paymentMethod,
+        });
+        await Cart.findOneAndUpdate({userId:userId._id},{$set:{items:[]}});
+
+        const orderSave = await newOrder.save();
+        if (orderSave) {
+            const orderId = newOrder._id
+            return res.status(200).json({ success: true, message: "Order placed" ,orderId:orderId});
+        } else {
+            return res.status(400).json({ success: false, message: "Error saving order" });
+        }
+    } catch (error) {
+        console.log("Error:", error.message);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+
+
+
+const orderComform = async(req,res)=>{
+    const orderId = req.query.id;
+    try {
+        if(!req.session.user){
+            return res.redirect("/signup");
+        }
+       const order = await Order.findById({_id:orderId})
+      return  res.render("orderComform",{totalPrice:order.totalPrice,date:order.createdOn.toLocaleDateString()});
+        
+    } catch (error) {
+        console.log("error in onform page ",error.message);
+        return res.redirect("/pageNotFound")
+    }
+}
+
+
 module.exports = {
-    getcartPage,
+    getcheckoutPage,
+    postCheckout,
+    orderComform,
 };
 
