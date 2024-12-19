@@ -1,0 +1,190 @@
+<%- include("../partials/userr/admin/header.ejs") %>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Stock Managenet</h2>
+                    <p>Lorem ipsum dolor sit amet.</p>
+                </div>
+                <div class="col-search">
+                    <form class="searchform">
+                        <div class="input-group">
+                            <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                            <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+                <!-- <div>
+                    <a href="/admin/addProdects" class="btn btn-primary btn-sm rounded">Create new</a>
+                </div> -->
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col col-check flex-grow-0">
+                            <div class="form-check ms-2">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                        </div>
+                        <div class="col-md-2 col-6">
+                        </div>
+                        <div class="col-md-2 col-6">
+                        </div>
+                    </div>
+                </header>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">
+                                    </th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Brand</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Flavor</th>
+                                    <th scope="col">Quantity</th>
+                                    <!-- <th scope="col" class="text-end">Action</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <%for(let i=data.length-1;i>=0;i--){%>
+                                <tr>
+                                    <td class="text-center">
+                                    </td>
+                                    <td>
+                                        <a class="itemside" href="#">
+                                            <div class="left">
+                                                <img src="/uploads/re-image/<%=data[i].productImage[0]%>" class="img-sm img-thumbnail" alt="Item">
+                                            </div>
+                                            <div class="info">
+                                                <h6 class="mb-0"><%=data[i].productName%></h6>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td><%=data[i].brand%></td>
+                                    <td><%= data[i].category.name ||'No Category' %></td>
+                                    <td><%=data[i].salePrice%></td>
+                                    <td>
+                                       <%if(data[i].isBlocked===false){%>
+                                        <button  class="btn btn-sm btn-outline-success ms-2" >
+                                            <a href="#">Unblock</a>
+                                        </button>
+                                    <%}else{%>
+                                            <button  class="btn btn-sm btn-outline-danger ms-2" >
+                                                <a href="#">Block</a>
+                                            </button>
+                                              <%}%>                        
+                                    </td>
+                                    <td><%=data[i].flavor%></td>
+                                    <td>
+                                        <div class="input-group input-group-sm" style="width: 130px;">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity(this)">-</button>
+                                            <input type="number" class="form-control text-center quantity-input" value="<%=data[i].quantity%>" 
+                                                   data-product-id="<%=data[i]._id%>" data-original-value="<%=data[i].quantity%>" 
+                                                   onblur="updateQuantity(this)" readonly>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity(this)">+</button>
+                                        </div>                                        
+                                    </td>
+                                    <!-- <td class="text-end">
+                                        <a href="/admin/editProduct?id=<%=data[i]._id%>" class="btn btn-sm font-sm rounded btn-brand">
+                                            <i class="material-icons md-edit"></i> Edit
+                                        </a>
+                                    </td> -->
+                                </tr>
+                                    <%}%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Bulk Nation .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="/backend/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/backend/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/backend/assets/js/vendors/select2.min.js"></script>
+    <script src="/backend/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/backend/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/backend/assets/js/main.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+
+function incrementQuantity(button) {
+    const input = button.closest('.input-group').querySelector('.quantity-input');
+    input.value = parseInt(input.value || 0) + 1;
+    updateQuantity(input);
+}
+
+function decrementQuantity(button) {
+    const input = button.closest('.input-group').querySelector('.quantity-input');
+    input.value = Math.max(0, parseInt(input.value || 0) - 1);
+    updateQuantity(input);
+}
+
+
+
+ async function updateQuantity(input) {
+    const productId = input.getAttribute('data-product-id');
+    const newQuantity = input.value;
+
+    try {
+        console.log("Updating quantity:", { productId, newQuantity });
+
+        const response = await fetch("/admin/updateProductQuantity", {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json",
+            },
+            body: JSON.stringify({ productId, quantity: newQuantity }),
+        });
+
+        const data = await response.json();
+        console.log("Server response:", data);
+
+        if (response.ok && data.status === true) {
+            // Swal.fire(
+            //     "Quantity Updated",
+            //     "Product quantity has been updated",
+            //     "success"
+            // );
+        } else {
+            console.error("Update failed:", data);
+            Swal.fire(
+                "Update Failed",
+                data.message || "Failed to update quantity",
+                "error"
+            );
+            input.value = data.currentQuantity || input.getAttribute('data-original-value');
+        }
+    } catch (error) {
+        console.error("Fetch error:", error);
+        Swal.fire(
+            "Error",
+            "An error occurred while updating quantity",
+            "error"
+        );
+        input.value = input.getAttribute('data-original-value');
+    }
+}
+</script>
+    
+</body>
+</html>

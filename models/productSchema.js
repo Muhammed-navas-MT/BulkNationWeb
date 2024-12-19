@@ -56,6 +56,10 @@ const ProductSchema = new Schema({
         enum: ["Available", "Out of stock"],
         required: true,
         default: "Available"
+    },
+    oldPrice:{
+        type:Number,
+        default:0
     }
 }, { timestamps: true });
 

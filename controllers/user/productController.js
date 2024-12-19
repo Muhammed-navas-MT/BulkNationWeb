@@ -5,6 +5,7 @@ const User = require("../../models/userSchema");
 
 const productDetails = async(req,res)=>{
     try {
+    const user = req.session.user || null
         // const userId = req.session.user._id;
         // console.log(userId)
         // const userData = await User.findById(userId);
@@ -13,13 +14,22 @@ const productDetails = async(req,res)=>{
         const findCategory = product.category;
         const categoryOffer = findCategory?.categoryOffer || 0;
         const productOffer = product.productOffer || 0;
-        const totalOffer = categoryOffer + productOffer;
+        let totalOffer = 0
         const products = await Product.find({ category: findCategory });
         const error = req.query.error || "";
-        console.log(findCategory)
+        console.log(findCategory);
+
+        if (categoryOffer > productOffer) {
+         totalOffer = categoryOffer;
+        } else if (productOffer > categoryOffer) {
+         totalOffer = productOffer;
+        } else {
+          totalOffer = productOffer;
+        }
+
         res.render("productDetails",{
             // user:userData,
-            user:null,
+            user:user,
             product:product,
             quantity:Product.quantity,
             totalOffer:totalOffer,

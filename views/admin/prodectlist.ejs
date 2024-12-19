@@ -68,9 +68,9 @@
                                     <th scope="col">Brand</th>
                                     <th scope="col">Category</th>
                                     <th scope="col">Price</th>
-                                    <!-- <th scope="col">Offer </th> -->
+                                    <th scope="col">Offer </th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Flavor</th>
+                                    <!-- <th scope="col">Flavor</th> -->
                                     <th scope="col">Quantity</th>
                                     <th scope="col" class="text-end">Action</th>
                                 </tr>
@@ -96,22 +96,23 @@
                                     <td><%=data[i].brand%></td>
                                     <td><%= data[i].category.name ||'No Category' %></td>
                                     <td><%=data[i].salePrice%></td>
-                                    <!-- <td>
-                                        <%if(locals.data[i].ProductOffer){%>
-                                            <%=data[i].ProductOffer%>%
+                                    <td>
+                                        <%if(data[i].productOffer > 0){%>
+                                            <%=data[i].productOffer%>%
                                         <%}else{%>
                                             0%
                                         <%}%>
-                                        <%if(locals.data[i].productOffer ===0){%>
-                                        <button onclick="addOffer('<%=data[i]._id%>')" class="btn btn-sm btn-outline-danger ms-2" >
-                                            Remove
-                                        </button>
-                                        <%}else{%>
-                                            <button onclick="removeOffer('<%=data[i]._id%>')" class="btn btn-sm btn-outline-success ms-2" >
-                                                Offer
+                                    
+                                        <%if(data[i].productOffer === 0){%>
+                                            <button onclick="addOffer('<%=data[i]._id%>')" class="btn btn-sm btn-outline-success ms-2">
+                                                Add Offer
                                             </button>
-                                            <%}%>
-                                    </td> -->
+                                        <%}else if(data[i].productOffer > 0){%>
+                                            <button onclick="removeOffer('<%=data[i]._id%>')" class="btn btn-sm btn-outline-danger ms-2">
+                                                Remove Offer
+                                            </button>
+                                        <%}%>
+                                    </td>                       
                                     <td>
                                        <%if(data[i].isBlocked===false){%>
                                         <button  class="btn btn-sm btn-outline-success ms-2" >
@@ -123,7 +124,7 @@
                                             </button>
                                               <%}%>                        
                                     </td>
-                                    <td><%=data[i].flavor%></td>
+                                    <!-- <td><%=data[i].flavor%></td> -->
                                     <td>
                                         <div class="input-group input-group-sm" style="width: 100px;">
                                             <!-- <button class="btn btn-outline-secondary" type="button">-</button> -->
@@ -149,6 +150,33 @@
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
         </section> <!-- content-main end// -->
+        <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-start">
+                    <!-- Previous Button -->
+                    <% if (currentPage > 1) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                        </li>
+                    <% } %>
+        
+                    <!-- Page Numbers -->
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                        </li>
+                    <% } %>
+        
+                    <!-- Next Button -->
+                    <% if (currentPage < totalPages) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </nav>
+        </div>
+        
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
@@ -174,56 +202,64 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-      async function addOffer(productId) {
-        console.log('Entered');
+async function addOffer(productId) {
+    console.log("Entered addOffer function");
+
+    // Validate productId
+    if (!productId) {
+        console.error("Invalid productId provided:", productId);
+        Swal.fire("Error", "Product ID is missing or invalid.", "error");
+        return;
+    }
+
     const { value: amount } = await Swal.fire({
         title: "Offer in percentage",
         input: "number",
-        inputLabel: "percentage",
-        inputPlaceholder: "%"
+        inputLabel: "Percentage",
+        inputPlaceholder: "%",
+        inputValidator: (value) => {
+            if (!value || isNaN(value) || value <= 0) {
+                return "Please enter a valid percentage!";
+            }
+        }
     });
+
     if (amount) {
         try {
             const response = await fetch("/admin/addProductOffer", {
                 method: "POST",
                 headers: {
-                    'Content-Type': "application/json",
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    percentage: amount,
+                    percentage: Number(amount), 
                     productId: productId,
                 }),
             });
-            console.log("Response status:", response.status);
 
-           
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+
+            // if (!response.ok) {
+            //     throw new Error(`HTTP error! Status: ${response.status}`);
+            // }
 
             const data = await response.json();
+
             if (data.status === true) {
-                Swal.fire(
-                    "Offer added",
-                    "The offer has been added",
-                    "success"
-                ).then(() => {
-                    location.reload()
+                Swal.fire("Offer Added", "The offer has been added successfully.", "success").then(() => {
+                    location.reload();
                 });
             } else {
-                Swal.fire("Failed", data.message || "Adding offer failed", "error");
+                Swal.fire("Failed", data.message || "Failed to add offer.", "error");
             }
-
         } catch (error) {
-            Swal.fire(
-                "Error",
-                "An error occurred while adding the offer",
-                "error"
-            );
-            console.log("Error adding offer", error);
+            console.error("Error adding offer:", error);
+            Swal.fire("Error", "An error occurred while adding the offer.", "error");
         }
+    } else {
+        console.log("Amount not entered or invalid");
     }
-};
+}
+
 
 
 async function removeOffer(productId) {

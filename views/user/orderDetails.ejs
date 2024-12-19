@@ -156,7 +156,7 @@
                         <a class="nav-link" href="/userAdresses">My Addresses</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">BN Cash</a>
+                        <a class="nav-link" href="/wallet">BN Cash</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Saved Cards</a>
@@ -196,7 +196,7 @@
                             <td id="orderId"><%= order.orderId %></td>
                             <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
                             <td><%= order.status %></td>
-                            <td>₹<%= order.finalAmount %></td>
+                            <td id="finalAmount">₹<%= order.finalAmount %></td>
                             <td>
                                 <% if (order.orderedItems && order.orderedItems.length > 0) { %>
                                     <ul>
@@ -214,9 +214,22 @@
                                 <td>
                                     <button style="background-color: orange; border: #e0ac07; border-radius: 10px; height: 40px; width: 90px;"><a href="/singeOrder?id=<%= order.orderId %>" style="text-decoration: none;">View</a></button>
                                     <br><br>
-                                    <button onclick="cancelOrder('<%= order.orderId %>')" style="background-color: orange; border: #e0ac07; border-radius: 10px; height: 40px; width: 90px;">
-                                        <span style="text-decoration: none;">Cancel</span>
-                                    </button>
+                                    <% if (order.status !== "Cancelled" && order.status !== "Delivered" && order.status!== "Return Request" && order.status !== "Returned" && order.status !== "Return Reject") { %>
+                                        <button onclick="cancelOrder('<%= order.orderId %>')" 
+                                                style="background-color: orange; border: #e0ac07; border-radius: 10px; height: 40px; width: 90px;">
+                                            <span style="text-decoration: none;">Cancel</span>
+                                        </button>
+                                    <% }%> 
+                                    <% if (order.status == "Delivered") { %>
+                                        <button onclick="returnOrder('<%= order.orderId %>')"
+                                                style="background-color: orange; border: #e0ac07; border-radius: 10px; height: 40px; width: 90px;">
+                                            <span style="text-decoration: none;">Return</span>
+                                        </button>
+                                    <% }%> 
+                                        <!-- <button
+                                            style="background-color: orange; border: #e0ac07; border-radius: 10px; height: 40px; width: 90px;">
+                                        <span style="text-decoration: none;">Return</span>
+                                    </button>-->
                                 </td>
                             </td>
                         </tr>
@@ -292,6 +305,74 @@
         }
     });
 }
+
+
+
+// Order return 
+async function returnOrder(orderId) {
+    const orderIdd = document.getElementById("orderId").textContent;
+    const finalAmount = document.getElementById("finalAmount").textContent.replace('₹', '').trim();
+
+    if (!orderIdd) {
+        Swal.fire({
+            title: "Oops",
+            icon: "error",
+            text: "Invalid Order ID",
+        });
+        return;
+    }
+
+    const { value: reason } = await Swal.fire({
+        title: "Return Request",
+        input: "text",
+        inputLabel: "Reason for Return",
+        inputPlaceholder: "Enter your return request",
+        inputValidator: (value) => {
+            if (!value || value.trim() === "") {
+                return "Please enter a valid reason!";
+            }
+        },
+    });
+
+    if (reason) {
+        try {
+            const response = await fetch("/returnOrder", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    reason: reason.trim(),
+                    finalAmount:finalAmount,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to process return order");
+            }
+
+            const result = await response.json();
+
+            Swal.fire({
+                title: "Success",
+                icon: "success",
+                text: result.message || "Your return request has been submitted successfully!",
+            })
+            .then(()=>{
+                window.location.reload();
+            })
+        } catch (error) {
+            Swal.fire({
+                title: "Error",
+                icon: "error",
+                text: error.message || "An error occurred while processing your return request.",
+            });
+        }
+    }
+}
+
+
     </script>    
 </body>
 </html>

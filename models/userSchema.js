@@ -85,6 +85,10 @@ const userSchema = new Schema({
             type:Date,
             default:Date.now
         }
+    }],
+    coupons:[{
+        code: String, 
+        appliedAt: Date
     }]
 });
 const User= mongoose.model("User",userSchema);

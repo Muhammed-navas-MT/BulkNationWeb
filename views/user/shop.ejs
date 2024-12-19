@@ -176,22 +176,23 @@
                 <div class="col-lg-9">
                     <div class="shop-product-fillter">
                         <div class="search-bar" style="margin: 20px 0; display: flex; justify-content: center; align-items: center;">
-                            <form action="/products/search" method="GET" style="display: flex; width: 100%; max-width: 600px;">
-                                <input 
-                                    type="text" 
-                                    name="query" 
-                                    placeholder="Search for products..." 
-                                    class="form-control" 
-                                    required 
+                            <form action="/shopPage" method="get" style="display: flex; width: 100%; max-width: 600px;">
+                                <input
+                                    type="text"
+                                    name="search"
+                                    placeholder="Search for products..."
+                                    value="<%=  searchQuery || null%>"
+                                    class="form-control"
                                     style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px 0 0 5px;"
-                                >
-                                <button 
-                                    type="submit" 
-                                    class="btn btn-primary" 
+                                />
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
                                     style="padding: 10px 20px; border-radius: 0 5px 5px 0; border: none; background-color: darkslategrey; color: #fff;">
                                     <i class="fi-rs-search"></i> Search
                                 </button>
                             </form>
+                            
                         </div>
                         
                         <!-- <div class="totall-product">
@@ -206,10 +207,10 @@
                                         <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
                                     </div>
                                     <div class="sort-by-dropdown-wrap">
-                                        <span> Featured <i class="fi-rs-angle-small-down"></i></span>
+                                        <span> Popularity <i class="fi-rs-angle-small-down"></i></span>
                                     </div>
                                 </div>
-                                <div class="sort-by-dropdown">
+                                <!-- <div class="sort-by-dropdown">
                                     <ul>
                                         <li><a class="active" href="#">Featured</a></li>
                                         <li><a href="/priceLowToHigh">Price: Low to High</a></li>
@@ -218,6 +219,17 @@
                                         <li><a href="/sortProductA-Z">aA - zZ </a></li>
                                         <li><a href="/sortProductZ-A">zZ - aA </a></li>
                                         <li><a href="/latestProduct">New arrivals </a></li>
+                                    </ul>
+                                </div> -->
+
+                                <div class="sort-by-dropdown">
+                                    <ul>
+                                        <li><a href="#" onclick="applySort('priceLowToHigh')">Price: Low to High</a></li>
+                                        <li><a href="#" onclick="applySort('priceHighToLow')">Price: High to Low</a></li>
+                                        <li><a href="#" onclick="applySort('popularity')">Popularity</a></li>
+                                        <li><a href="#" onclick="applySort('aToZ')">aA - zZ</a></li>
+                                        <li><a href="#" onclick="applySort('zToA')">zZ - aA</a></li>
+                                        <li><a href="#" onclick="applySort('latest')">New arrivals</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -237,7 +249,14 @@
                                     <div class="product-action-1">
                                         <!-- <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"> -->
 <i class="fi-rs-search"></i></a>
-                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
+                                        <!-- <a aria-label="Add To Wishlist"  id="wishlist" class="action-btn hover-up" onclick="addToWishlist('<%= products._id %>')" ><i class="fi-rs-heart"></i></a> -->
+                                        <a 
+                                            aria-label="Add To Wishlist" 
+                                            class="action-btn hover-up" 
+                                            onclick="addToWishlist('<%=products[i]._id%>')"
+                                          >
+                                            <i class="fi-rs-heart"></i>
+                                          </a>                                          
                                         <!-- <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> -->
                                     </div>
                                     <!-- <div class="product-badges product-badges-position product-badges-mrg">
@@ -255,8 +274,8 @@
                                         </span>
                                     </div>
                                     <div class="product-price">
-                                        <span>$<%=products[i].salePrice%></span>
-                                        <span class="old-price">$<%=products[i].regularPrice%></span>
+                                        <span>₹<%=products[i].salePrice%></span>
+                                        <span class="old-price">₹<%=products[i].regularPrice%></span>
                                     </div>
                                     <div class="product-action-1 show">
                                         <% if (products[i].quantity > 0) { %>
@@ -275,7 +294,7 @@
                         </div>
                     </div> 
                     <!--pagination-->
-                    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+                    <!-- <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-start">
                                 <li class="page-item active"><a class="page-link" href="#">01</a></li>
@@ -286,78 +305,127 @@
                                 <li class="page-item"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>
                             </ul>
                         </nav>
+                    </div> -->
+                    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-start">
+                                <!-- Previous Button -->
+                                <% if (currentPage > 1) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<%= currentPage - 1 %>">
+                                            <i class="fi-rs-angle-double-small-left"></i>
+                                        </a>
+                                    </li>
+                                <% } %>
+                    
+                                <!-- Page Numbers -->
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                    </li>
+                                <% } %>
+                    
+                                <!-- Next Button -->
+                                <% if (currentPage < totalPages) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<%= currentPage + 1 %>">
+                                            <i class="fi-rs-angle-double-small-right"></i>
+                                        </a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </nav>
                     </div>
+                    
+                    
                 </div>
                 <div class="col-lg-3 primary-sidebar sticky-sidebar">
                     <div class="widget-category mb-30">
                         <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
                         <ul class="categories">
-                            <%for(let i =0;i<categories.length;i++){%>
-                            <li><a href="/categotySort?id=<%=categories[i]._id%>"><%=categories[i].name%></a></li>
-                            <%}%>
-                            <!-- <li><a href="#">Peanut Buttur</a></li>
-                            <li><a href="#">Mass Gainer</a></li>
-                            <li><a href="#">Fish Oil</a></li> -->
+                            <% for (let i = 0; i < categories.length; i++) { %>
+                            <li><a href="/shopPage?categoryId=<%= categories[i]._id %>&search=<%= searchQuery %>"> <%= categories[i].name %></a></li>
+                            <% } %>
+                            
                         </ul>
                     </div>
-                    <!-- Fillter By Price -->
-                    <!-- <div class="sidebar-widget price_range range mb-30">
-                        <div class="widget-header position-relative mb-20 pb-10">
-                            <h5 class="widget-title mb-10">Fill by price</h5>
-                            <div class="bt-1 border-color-1"></div>
+                    <div class="col-lg-12 primary-sidebar sticky-sidebar">
+                        <div class="widget-category mb-30">
+                            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Brand</h5>
+                            <ul class="categories">
+                                <li><a href="/shopPage?<%= `search=${searchQuery}&categoryId=${categoryId}` %>">All Brands</a></li>
+                                <% for (let i = 0; i < brands.length; i++) { %>
+                                <li><a href="/shopPage?brandName=<%= brands[i].brandName %>&search=<%= searchQuery %>&categoryId=<%= categoryId %>">  <%= brands[i].brandName %></a></li>
+                                <% } %>
+                                
+                            </ul>
                         </div>
-                        <div class="price-filter"> -->
-                            <!-- <div class="price-filter-inner">
-                                <div id="slider-range"></div>
-                                <div class="price_slider_amount">
-                                    <div class="label-input">
-                                        <span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-                        <!-- <div class="list-group">
-                            <div class="list-group-item mb-10 mt-10">
-                            </div>
-                        </div>
-                        <a href="/shopPage" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Fillter</a>
-                    </div> -->
-                    <!-- <div class="banner-img wow fadeIn mb-45 animated d-lg-block d-none">
-                    </div> -->
-                </div>
             </div>
         </div>
     </section>
 </main>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const searchForm = document.querySelector(".search-bar form");
-      const searchInput = searchForm.querySelector("input[name='query']");
-  
-      // Enhance search experience
-      searchInput.addEventListener("focus", () => {
-        searchInput.style.borderColor = "#007bff"; // Highlight input on focus
-      });
-  
-      searchInput.addEventListener("blur", () => {
-        searchInput.style.borderColor = "#ced4da"; // Reset border on blur
-      });
-  
-      // Handle form submission
-      searchForm.addEventListener("submit", (event) => {
-        const query = searchInput.value.trim();
-  
-        if (!query) {
-          event.preventDefault(); // Stop form submission
-          alert("Please enter a product name to search.");
-          return;
+
+    function applySort(sortType) {
+        const url = new URL(window.location.href);
+        
+        // Set the sort parameter
+        if (sortType) {
+            url.searchParams.set("sort", sortType);
+        } else {
+            url.searchParams.delete("sort");
         }
-  
-        // Optional: Log the search query
-        console.log("Searching for:", query);
-      });
-    });
+
+        // Optionally reset to page 1 when sorting changes
+        url.searchParams.set("page", 1);
+
+        // Redirect to the updated URL
+        window.location.href = url.toString();
+    };
+
+
+    async function addToWishlist(productId) {
+            try {
+                const response = await fetch('/add-to-wishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    Swal.fire({
+                        title: 'Sorry',
+                        text: data.message||null,
+                        icon: 'error',
+                        confirmButtonText: 'Okay'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Product added to wishlist',
+                        icon: 'success',
+                        confirmButtonText: 'Okay'
+                    });
+                }
+            } catch (error) {
+                console.error('Error adding product to wishlist:', error);
+                Swal.fire({
+                  title: 'Welcome Back!',
+                  text: 'Please log in to continue and access your account.',
+                  icon: 'info',
+                  confirmButtonText: '<a href="/signup">Log In',
+                  footer: '<a href="/signup">Don’t have an account? Sign up here!</a>',
+                });
+            }
+        }
+
+
+    
   </script>
   
 

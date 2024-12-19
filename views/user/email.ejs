@@ -88,6 +88,7 @@ p {
             <img src="assets/imgs/slider/email.webp" alt="Email Logo">
         </div>
         <p>Enter your email address to reset your password.</p>
+        <span style="color: red;"><%= message%></span>
         <form method="post" action="/foget-email-valid">
             <input type="email" placeholder="Enter your email" name="email" class="email-input" required>
             <button type="submit" class="submit-btn">Send Reset Link</button>

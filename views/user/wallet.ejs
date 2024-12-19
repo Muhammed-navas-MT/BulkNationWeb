@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Nation - Wallet</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .nav-link:hover { color: orange; }
+        .nav-link.active { color: black; font-weight: bold; border-bottom: 2px solid #ffc107; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <nav class="bg-white shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="/" class="text-xl font-bold">Bulk Nation</a>
+                <button class="lg:hidden" aria-label="Toggle navigation">
+                    <span class="block w-6 h-px bg-gray-900 mb-1"></span>
+                    <span class="block w-6 h-px bg-gray-900 mb-1"></span>
+                    <span class="block w-6 h-px bg-gray-900"></span>
+                </button>
+                <div class="hidden lg:flex lg:items-center">
+                    <div class="flex space-x-4">
+                        <a href="/userProfile" class="nav-link px-3 py-2 text-sm text-gray-600">My Profile</a>
+                        <a href="/orderDetails" class="nav-link px-3 py-2 text-sm text-gray-600">My Orders</a>
+                        <a href="/userAdresses" class="nav-link px-3 py-2 text-sm text-gray-600">My Addresses</a>
+                        <a href="/wallet" class="nav-link active px-3 py-2 text-sm">BN Cash</a>
+                        <a href="#" class="nav-link px-3 py-2 text-sm text-gray-600">Saved Cards</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div class="grid grid-cols-2 border-b">
+                <div class="p-6">
+                    <h2 style="color: orange;" class="text-gray-600 text-sm font-medium">Wallet Balance</h2>
+                    <p class="text-4xl font-bold mt-2">₹<%= wallet.balance%></p>
+                </div>
+                <div class="p-6 flex items-center justify-end">
+                    <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded">
+                        Add Money
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b">
+                            <th style="color: orange;" class="text-left p-4 text-sm font-medium text-gray-600">Date</th>
+                            <th style="color: orange;" class="text-left p-4 text-sm font-medium text-gray-600">Transaction Type</th>
+                            <th style="color: orange;" class="text-left p-4 text-sm font-medium text-gray-600">Amount</th>
+                            <th style="color: orange;" class="text-left p-4 text-sm font-medium text-gray-600">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (let i = 0; i < wallet.transactions.length; i++) { %>
+                            <tr class="border-b">
+                                <td class="p-4 text-sm"><%= wallet.transactions[i].date.toLocaleDateString() %></td>
+                                <td class="p-4 text-sm"><%= wallet.transactions[i].type %></td>
+                                <td class="p-4 text-sm text-emerald-500">+ ₹<%= wallet.transactions[i].amount %></td>
+                                <td class="p-4 text-sm text-emerald-500"><%= wallet.transactions[i].status %></td>
+                            </tr>
+                        <% } %>                        
+                    </tbody>
+                </table>
+            </div>
+            <!-- <div class="flex items-center justify-center p-4 border-t">
+                <nav class="flex items-center space-x-2">
+                    <button class="px-3 py-1 text-sm border rounded">Previous</button>
+                    <button class="px-3 py-1 text-sm border rounded bg-blue-500 text-white">1</button>
+                    <button class="px-3 py-1 text-sm border rounded">2</button>
+                    <button class="px-3 py-1 text-sm border rounded">3</button>
+                    <button class="px-3 py-1 text-sm border rounded">Next</button>
+                </nav>
+            </div> -->
+        </div>
+    </div>
+</body>
+</html>

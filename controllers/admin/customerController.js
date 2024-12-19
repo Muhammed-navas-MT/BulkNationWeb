@@ -38,7 +38,7 @@ const customerInfo = async (req, res) => {
 
         const totalPage = Math.ceil(count / limit);
 
-        // Pass totalPage and currentPage to the EJS template
+    
         res.render("users", { data: userData, totalPage: totalPage, currentPage: page });
 
     } catch (error) {

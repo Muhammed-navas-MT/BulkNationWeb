@@ -5,7 +5,10 @@ const customerController= require("../controllers/admin/customerController");
 const categoryController =require("../controllers/admin/categoryController");
 const brandController = require("../controllers/admin/brandController");
 const prodectController = require("../controllers/admin/prodectController");
-const orderController = require("../controllers/admin/orderController")
+const orderController = require("../controllers/admin/orderController");
+const couponController = require("../controllers/admin/coupunController");
+const orderReasonController = require("../controllers/admin/orderReasonController");
+const salesReportController = require("../controllers/admin/saleReportController")
 const adminAuth = require("../middlewares/auth");
 const multer = require("multer");
 const storage = require("../helpers/multer");
@@ -60,6 +63,28 @@ router.post("/deleteImage",adminAuth.adminAuth,prodectController.deleteImage);
 router.get("/order",adminAuth.adminAuth,orderController.renderOrderPage);
 router.get("/order-details",adminAuth.adminAuth,orderController.getOrderDetailsView);
 router.get("/statusUpdate",adminAuth.adminAuth,orderController.updateStatus);
+
+
+router.get("/stockManagement",prodectController.ProductStockManagement);
+router.post("/updateProductQuantity",prodectController.postStock);
+
+
+// coupun Management
+router.get("/coupon",adminAuth.adminAuth,couponController.loadCoupon);
+router.post("/createCoupon",adminAuth.adminAuth,couponController.createCoupon);
+router.post("/updateCoupon",adminAuth.adminAuth,couponController.editCoupon);
+router.delete("/delete-coupon/:productId",adminAuth.adminAuth,couponController.deleteCoupon);
+
+
+// return request managenet
+router.get("/reason",adminAuth.adminAuth,orderReasonController.getOrderReason);
+router.post("/rejectRequest",adminAuth.adminAuth,orderReasonController.returnReject);
+router.post("/returnApproved",adminAuth.adminAuth,orderReasonController.returnAproved);
+
+// Sales report managment
+router.get("/salesReport",adminAuth.adminAuth,salesReportController.getsales);
+
+router.get("/orders",adminAuth.adminAuth,salesReportController.generateReport);
 
 
 

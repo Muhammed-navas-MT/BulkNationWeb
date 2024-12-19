@@ -136,6 +136,10 @@ const signup = async (req,res)=>{
         };
 
         req.session.userOtp =otp;
+        setTimeout(() => {
+            req.session.userOtp = null;
+            console.log("OTP expired");
+        }, 60 * 1000); 
         req.session.userData ={username,phone,email,password};
 
         return res.render("otp");
@@ -151,15 +155,14 @@ const verifyOtp = async (req, res) => {
         const { otp } = req.body;
         console.log("Received OTP from client:", otp);
        
-        // Check if the OTP matches
         if (otp === req.session.userOtp) {
             const user = req.session.userData;
-            console.log("User data found in session:", user); // Log user data in session
+            console.log("User data found in session:", user); 
 
-            // Hash the password
+           
             const passwordHash = await securePassword(user.password);
 
-            // Create a new user instance
+            
             const saveUserData = new User({
                 username: user.username,
                 email: user.email,
@@ -201,6 +204,10 @@ const resendOtp = async (req, res) => {
         }
 
         req.session.userOtp = otp;
+        setTimeout(() => {
+            req.session.userOtp = null;
+            console.log("OTP expired");
+        }, 60 * 1000); 
         res.json({ success: true, message: "OTP resent successfully" });
     } catch (error) {
         console.error("Error resending OTP:", error);

@@ -9,6 +9,9 @@ const cartController = require("../controllers/user/cartController");
 const shopController = require("../controllers/user/shopController");
 const checkoutController = require("../controllers/user/checkoutController");
 const orderController = require("../controllers/user/orderController");
+const wishlistController = require("../controllers/user/wishlistController");
+const couponController = require("../controllers/user/couponController");
+const walletController = require("../controllers/user/walletController")
 
 
 router.get("/pageNotFound",userControllor.pageNotFound);
@@ -59,54 +62,37 @@ router.post("/add-to-cart",userAuth.userAuth,cartController.productAddToCart);
 
 // shop management
 router.get("/shopPage",shopController.getShopPage);
-router.get("/priceLowToHigh",shopController.priceLowToHigh);
-router.get("/priceHighToLow",shopController.priceHighToLow);
-router.get("/sortProductA-Z",shopController.sortAToZ);
-router.get("/sortProductZ-A",shopController.sortZToA);
-router.get("/popularityProducts",shopController.popularityProducts);
-router.get("/latestProduct",shopController.latestProduct);
-router.get("/categotySort",shopController.categotySort);
+// router.get("/priceLowToHigh",shopController.priceLowToHigh);
+// router.get("/priceHighToLow",shopController.priceHighToLow);
+// router.get("/sortProductA-Z",shopController.sortAToZ);
+// router.get("/sortProductZ-A",shopController.sortZToA);
+// router.get("/popularityProducts",shopController.popularityProducts);
+// router.get("/latestProduct",shopController.latestProduct);
+// router.get("/categotySort",shopController.categotySort);
 router.get("/checkout",userAuth.userAuth,checkoutController.getcheckoutPage);
 router.post("/checkout",userAuth.userAuth,checkoutController.postCheckout);
 router.get("/orderComform",checkoutController.orderComform);
-router.get('/products/search',shopController.searchProducts);
+// router.get('/products/search',shopController.searchProducts);
 
 // Order management
 router.get("/orderDetails",userAuth.userAuth,orderController.getOrderPage);
 router.get("/singeOrder",userAuth.userAuth,orderController.singleOrder);
 router.post("/cancelOrder/:id",userAuth.userAuth,orderController.cancelOrder);
+router.post("/returnOrder",userAuth.userAuth,orderController.returnOrder);
+
+// wishlist management
+router.get("/wishlist",userAuth.userAuth,wishlistController.getWishlist);
+router.post("/add-to-wishlist",userAuth.userAuth,wishlistController.addproductToWishlist);
+router.post("/delete-to-wishlist",userAuth.userAuth,wishlistController.deteteToWishlist);
+router.post('/verify-payment', checkoutController.verifyRazorpayPayment);
 
 
-// router.post('/cart/update-quantity', async (req, res) => {
-//     const { productId, action } = req.body;
-//     try {
-//         // Fetch product and cart details
-//         const product = await Product.findById(productId);
-//         const cart = req.session.cart; // Assume cart is stored in session
+// coupon management
+router.post("/apply-coupon",userAuth.userAuth,couponController.applyCoupon);
+router.post("/remove-coupon",userAuth.userAuth,couponController.removeCoupon);
 
-//         // Update quantity logic
-//         const cartItem = cart.items.find(item => item.productId === productId);
-//         if (!cartItem) return res.status(404).send({ message: "Product not found in cart" });
-
-//         if (action === 'increase' && cartItem.quantity < product.quantity) {
-//             cartItem.quantity += 1;
-//             console.log("+ 1");
-//         } else if (action === 'decrease' && cartItem.quantity > 1) {
-//             cartItem.quantity -= 1;
-//             console.log("-1");
-//         } else {
-//             return res.status(400).send({ message: "Invalid action or quantity limit reached" });
-//         }
-
-//         // Recalculate cart totals
-//         cart.total = cart.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
-//         req.session.cart = cart;
-
-//         res.send({ message: 'Quantity updated successfully', cart });
-//     } catch (error) {
-//         res.status(500).send({ message: 'Failed to update quantity' });
-//     }
-// });
+// wallet management
+router.get("/wallet",userAuth.userAuth,walletController.getWallet);
 
 
 

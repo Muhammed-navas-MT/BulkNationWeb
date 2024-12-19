@@ -60,18 +60,16 @@ return true;
 
 
 const getemail = async(req,res)=>{
+    const message= req.query.message || null;
     try {
-        console.log("this working")
-        res.render("email");
+        res.render("email",{message:message});
     } catch (error) {
         res.redirect("/pageNotFound");
     }
 }
 
 const Forgotemail = async (req,res)=>{
-    console.log('that working')
     try {
-        console.log("that this working");
         const {email} = req.body;
         console.log(email);
         const findUser =await User.findOne({email:email});
@@ -82,7 +80,12 @@ const Forgotemail = async (req,res)=>{
             if(emailSent){
                 req.session.userOtp = otp;
                 req.session.email = email;
-                console.log("Otp",otp)
+                console.log("Otp",otp);
+
+                setTimeout(() => {
+                    req.session.userOtp = null;
+                    console.log("OTP expired");
+                }, 60 * 1000);
                return res.render("passwordOtp");
               
             }else{
@@ -90,10 +93,7 @@ const Forgotemail = async (req,res)=>{
             }
 
         }else{
-            console.log("hello redirect email")
-            res.render("email",{
-                message:"User with this emil does not exist"
-            })
+            res.redirect("/forget-password?message=Email not found");
         }
     } catch (error) {
         res.redirect("/pageNotFound");
@@ -132,6 +132,10 @@ const resendForgotOtp = async(req,res)=>{
     try {
         const otp = generateOtp();
         req.session.userOtp = otp;
+        setTimeout(() => {
+            req.session.userOtp = null;
+            console.log("OTP expired");
+        }, 60 * 1000); 
         const email = req.session.email;
         console.log("REsenting to email",email);
         const emailSent = await sendVerificationEmail(email,otp);
@@ -158,7 +162,7 @@ const resetPassword = async(req,res)=>{
             )
             res.redirect("/signup");
         }else{
-            res.redirect("/resentPassword?error= Password do not match");
+            res.redirect("/reset-password?error= Password do not match");
         }
     } catch (error) {
         res.redirect("/pageNotFound");

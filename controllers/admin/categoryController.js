@@ -34,10 +34,10 @@ const addCategory = async (req, res) => {
   
     const { name, description } = req.body;
     console.log(name, description);
-  
+    const trimName = name.trim();
     try {
     const existingCategory = await Category.findOne({
-        name: { $regex: `^${name}$`, $options: "i" },
+        name: { $regex: `^${trimName}$`, $options: "i" },
     });
       console.log(existingCategory);
   
@@ -69,16 +69,16 @@ const addCategoryOffer = async (req, res) => {
           return res.status(404).json({ status: false, message: "Category not found" });
       }
 
-      // Update the category offer without checking product offers
+
       await Category.updateOne({ _id: categoryId }, { $set: { categoryOffer: percentage } });
 
       // Reset individual product offers and sale prices if necessary
-      const prodects = await Prodect.find({ category: category._id });
-      for (const prodect of prodects) {
-          prodect.prodectOffer = 0;
-          prodect.salePrice = prodect.regularPrice;
-          await prodect.save();
-      }
+      // const prodects = await Prodect.find({ category: category._id });
+      // for (const prodect of prodects) {
+      //     prodect.prodectOffer = 0;
+      //     prodect.salePrice = prodect.regularPrice;
+      //     await prodect.save();
+      // }
 
       res.json({ status: true });
   } catch (error) {
@@ -103,8 +103,7 @@ const removeCategoryOffer = async (req, res) => {
 
       if (prodects.length > 0) {
           for (const prodect of prodects) {
-              prodect.salePrice += Math.floor(prodect.regularPrice * (percentage / 100));
-              prodect.prodectOffer = 0;
+              prodect.salePrice = prodect.oldPrice
               await prodect.save();
           }
       }
@@ -159,11 +158,11 @@ const loadEditCategory = async(req,res)=>{
 
 // Category edit post method
 const editCategory = async (req,res)=>{
-  console.log("post method")
   try {
     const id = req.params.id;
     const {categoryName,description} =req.body;
-    const existingCategory = await Category.findOne({ name: { $regex: `^${categoryName}$`, $options: "i" } });
+    const trimmedCategoryName = categoryName.trim();
+    const existingCategory = await Category.findOne({ name: { $regex: `^${trimmedCategoryName}$`, $options: "i" } });
     // const existingCategory = await Category.findOne({name:categoryName});
     
     if(existingCategory){

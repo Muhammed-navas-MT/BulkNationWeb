@@ -38,7 +38,7 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Description</th>
-                                            <!-- <th>Offer</th> -->
+                                            <th>Offer</th>
                                             <th>List/ Unlist</th>
                                             <th class="text-end">Action</th>
                                         </tr>
@@ -48,26 +48,27 @@
                                         <tr>
                                             <td><b><%=category.name%></b></td>
                                             <td><%=category.description%></td>
-                                            <!-- <td>
+                                            <td>
                                                 <%if(category.categoryOffer){%>
                                                     <%=category.categoryOffer%>%
                                                 <%}else{%>
                                                     0%
-                                                    <%}%> -->
-                                                <!-- </td> -->
+                                                    <%}%> 
+                                             
                                             <!-- <td class="text-start"> -->
                                                 <!-- Add Offer Button if categoryOffer is 0 -->
-                                                 <!-- <%if(category.categoryOffer===0){%>
+                                                 <%if(category.categoryOffer===0){%>
                                                 <button class="btn btn-info" style="width: 100px;">
                                                   <a href="#" class="text-white" onclick="addOffer('<%= category._id %>')">Add Offer</a>
                                                 </button>
-                                                <%}else{%> -->
+                                                <%}else{%>
                                                 <!-- Remove Button if categoryOffer is not 0 -->
-                                                <!-- <button class="btn btn-info" style="width: 100px;">
+                                                <button class="btn btn-info" style="width: 100px;">
                                                   <a href="#" class="text-white" onclick="removeOffer('<%= category._id %>')">Remove</a>
                                                 </button>
                                                 <%}%>
-                                            </td> -->
+                                            <!-- </td> -->
+                                        </td> 
                                             <td class="text-start">
                                                 <% if (category.isListed) { %>
                                                     <span class="badge rounded-pill alert-success" style="width: 60px">Listed</span>

@@ -49,7 +49,7 @@ const orderSchema = new Schema({
     status:{
         type:String,
         required:true,
-        enum:["pending","Processing","Shipped","Delivered","Cancelled","Return Request","Returned"],
+        enum:["pending","Processing","Shipped","Delivered","Cancelled","Return Request","Returned","Return Reject"],
     },
     createdOn:{
         type:Date,
@@ -103,6 +103,12 @@ const orderSchema = new Schema({
      payment_status:{
          type:String,
      },
+     razorpayOrderId: String,
+     paymentDetails: {
+       razorpayOrderId: String,
+       razorpayPaymentId: String,
+       razorpaySignature: String
+     }
 });
 
 const Order = mongoose.model("Order",orderSchema);

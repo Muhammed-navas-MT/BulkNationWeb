@@ -1,5 +1,23 @@
 <%- include("../partials/userr/header.ejs") %>
+<style>
+    .rating-result {
+    display: flex;
+    align-items: center;
+}
 
+.offer {
+    margin-left: 10px;
+}
+
+.offer-badge {
+    display: inline-block;
+    /* padding: 4px 8px; */
+    color: white;
+    background-color: rgb(81, 141, 81);
+    border-radius: 10px;
+    font-size: 0.8em;
+}
+</style>
  <div class="mobile-header-active mobile-header-wrapper-style">
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
@@ -200,7 +218,14 @@
                                         <div class="product-action-1">
                                             <!-- <a aria-label="Quick view" class="action-btn hover-up" href="#"  ><i class="fi-rs-eye"></i></a> -->
                                             <!-- data-bs-target="#quickViewModal" data-bs-toggle="modal" -->
-                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="/addToWishList?id=<%=products[i]._id%>"><i class="fi-rs-heart"></i></a>
+                                            <!-- <a aria-label="Add To Wishlist" class="action-btn hover-up" href="/add-to-wishlist?id=<%=products[i]._id%>"><i class="fi-rs-heart"></i></a> -->
+                                            <a 
+                                            aria-label="Add To Wishlist" 
+                                            class="action-btn hover-up" 
+                                            onclick="addToWishlist('<%=products[i]._id%>')"
+                                          >
+                                            <i class="fi-rs-heart"></i>
+                                          </a>                                          
                                             <!-- <a aria-label="Add To Cart" class="action-btn hover-up" href="/addToCart?id=<%=products[i]._id%>"><i class="fi-rs-shuffle"></i></a> -->
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
@@ -214,9 +239,18 @@
                                         </div>
                                         <!-- <h6><a href="#"><%=products[i].description%></a></h6> -->
                                         <h2><a href="#"><%=products[i].flavor%></a></h2>
+                                        <!-- <div class="rating-result" title="90%">
+                                            <span class="offer">
+                                                <span style="margin-left:10px;color: gray;background-color: green;border-radius: 10%; width: 40px;height: 10px;"><%=products[i].productOffer%> Offer</span>
+                                            </span>
+                                        </div> -->
                                         <div class="rating-result" title="90%">
                                             <span class="offer">
-                                                <span></span>
+                                                <!-- <%if(products[i].productOffer>0){%>
+                                                <span class="offer-badge">
+                                                    <%= products[i].productOffer %> %Offer
+                                                </span>
+                                                <%}%> -->
                                             </span>
                                         </div>
                                         <div class="product-price">
@@ -241,3 +275,45 @@
                     
     </main>
     <%- include("../partials/userr/footer.ejs") %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+         async function addToWishlist(productId) {
+            try {
+                const response = await fetch('/add-to-wishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    Swal.fire({
+                        title: 'Sorry',
+                        text: data.message||null,
+                        icon: 'error',
+                        confirmButtonText: 'Okay'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Product added to wishlist',
+                        icon: 'success',
+                        confirmButtonText: 'Okay'
+                    });
+                }
+            } catch (error) {
+                console.error('Error adding product to wishlist:', error);
+                Swal.fire({
+                  title: 'Welcome Back!',
+                  text: 'Please log in to continue and access your account.',
+                  icon: 'info',
+                  confirmButtonText: '<a href="/signup">Log In',
+                  footer: '<a href="/signup">Don’t have an account? Sign up here!</a>',
+                });
+            }
+        }
+   
+    </script>

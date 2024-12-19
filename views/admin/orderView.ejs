@@ -30,7 +30,7 @@
               <div class="col-md-4">
                 <h5 class="text-muted">Order Status</h5>
                 <span
-                  class="badge <% if (order.status === 'Pending') { %> bg-warning text-dark <% } else if (order.status === 'Processing') { %> bg-info text-white <% } else if (order.status === 'Shipped') { %> bg-primary text-white <% } else if (order.status === 'Delivered') { %> bg-success text-white <% } else if (order.status === 'Cancelled') { %> bg-danger text-white <% } else if (order.status === 'Return Request') { %> bg-secondary text-white <% } else if (order.status === 'Returned') { %> bg-dark text-white <% } %>"
+                  class="badge <% if (order.status=== 'pending') { %> bg-warning text-dark <% } else if (order.status === 'Processing') { %> bg-info text-white <% } else if (order.status === 'Shipped') { %> bg-primary text-white <% } else if (order.status === 'Delivered') { %> bg-success text-white <% } else if (order.status === 'Cancelled') { %> bg-danger text-white <% } else if (order.status === 'Return Request') { %> bg-secondary text-white <% } else if (order.status === 'Returned') { %> bg-dark text-white <% } %>"
                 >
                   <%= order.status %>
                 </span>
@@ -38,9 +38,9 @@
               <div class="col-md-4">
                 <h5 class="text-muted">Payment Status</h5>
                 <span
-                  class="badge <% if (order.payment_status === 'COD') { %> bg-warning text-dark <% } else if (order.payment_status === 'payment_completed') { %> bg-success text-white <% } else if (order.payment_status === 'payment_failed') { %> bg-danger text-white <% } else { %> bg-secondary text-white <% } %>"
+                  class="badge <% if (order.payment_status === '') { %> bg-warning text-dark <% } else if (order.payment_status === 'Success') { %> bg-success text-white <% } else if (order.payment_status === ' Refund') { %> bg-danger text-white <% } else { %> bg-secondary text-white <% } %>"
                 >
-                  <%= order.payment_status || "Unknown" %>
+                  <%= order.payment_status || "pending" %>
                 </span>
               </div>
               <div class="col-md-4 text-end">
@@ -66,16 +66,17 @@
           </div>
           <div class="card-body">
             <% order.orderedItems.forEach((item) => { %>
+              
               <div class="row align-items-center border-bottom pb-3 mb-3">
-                <div class="col-md-2">
+                <div class="col-md-2" style="width: 90px; height: 90px;">
                   <img
-                    src="/uploads/re-image/<%= item.product?.productImage?.[0] || 'default.jpg' %>"
+                    src="/uploads/re-image/<%=item.id.productImage[0]  %>"
                     alt="<%= item.product?.name || 'Product Name Unavailable' %>"
                     class="img-fluid rounded"
                   />
                 </div>
                 <div class="col-md-6">
-                  <h5><%= item.product?.name || 'Unknown Product' %></h5>
+                  <h5><%= item.id?.productName || 'Unknown Product' %></h5>
                   <p class="text-muted">Quantity: <%= item.quantity %></p>
                 </div>
                 <div class="col-md-4 text-end">

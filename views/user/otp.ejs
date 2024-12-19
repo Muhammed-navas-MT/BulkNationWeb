@@ -28,7 +28,7 @@
                         </div>
                         <button id="alertButton" type="submit" class="btn submit-btn btn-lg w-100">Submit</button>
                         <p class="text-center mt-3" id="timer">Time left: 60 seconds</p>
-                        <p class="text-center mt-2 " id="resend">
+                        <p class="text-center mt-2 " id="resend" style="display: none;">
                             Didn't receive the code? <a href="#" id="resendOtpLink">Resend OTP</a>
                         </p>                        
                     </form>
@@ -55,10 +55,15 @@
             countdown = setInterval(() => {
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    timerElement.textContent = "Time is up!";
-                    // document.getElementById('alertButton').disabled = true; // Disable the submit button
+                    timerElement.textContent = "OTP Expired!";
+                    document.getElementById('alertButton').disabled = true; 
+                    const resend = document.getElementById("resend");
+                      resend.style.display = "block";
                 } else {
+                    document.getElementById('alertButton').disabled = false;
                     timerElement.textContent = `Time left: ${timeLeft} seconds`;
+                    const resend = document.getElementById("resend");
+                      resend.style.display = "none";
                 }
                 timeLeft--;
             }, 1000);

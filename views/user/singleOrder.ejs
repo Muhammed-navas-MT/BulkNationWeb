@@ -53,6 +53,25 @@
             background-color: #e6a02f;
             border-color: #e6a02f;
         }
+
+        @media print {
+        body * {
+            visibility: hidden; /* Hide all elements */
+        }
+        .order-details-card, .order-details-card * {
+            visibility: visible; /* Show order details */
+        }
+        .order-details-card .btn {
+            display: none; /* Hide all buttons */
+        }
+        .order-details-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+    }
+
     </style>
 </head>
 <body>
@@ -162,5 +181,12 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelector('.btn-primary').addEventListener('click', (event) => {
+            event.preventDefault();
+            window.print(); 
+        });
+    </script>
+    
 </body>
 </html>

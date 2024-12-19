@@ -32,21 +32,64 @@ const getProdectAddpage = async(req,res)=>{
     }
 };
 
+// const getProdectAddpage = async (req, res) => {
+//     try {
+//         if (!req.session.admin) {
+//             return res.redirect("/admin/login");
+//         }
+
+//         const success = req.query.success || "";
+//         const error = req.query.error || "";
+
+//         // Fetch categories and brands
+//         const categories = await Category.find({ isListed: true });
+//         const brands = await Brand.find({ isBlock: false });
+
+//         // Fetch all products
+//         const products = await Product.find();
+
+//         // Iterate through products and update sale prices based on category offers
+//         for (const product of products) {
+//             const category = categories.find(cat => cat._id.equals(product.category));
+//             if (category && category.categoryOffer) {
+//                 const discountAmount = Math.floor(product.regularPrice * (category.categoryOffer / 100));
+//                 const newSalePrice = product.regularPrice - discountAmount;
+
+//                 // Update sale price and save old price if necessary
+//                 if (newSalePrice < product.salePrice) {
+//                     product.oldPrice = product.salePrice; // Save the current sale price as old price
+//                     product.salePrice = newSalePrice;     // Update with the new sale price
+//                     console.log(`Updated sale price for product ${product.name}: ${product.salePrice}, Old Price: ${product.oldPrice}`);
+//                     await product.save();
+//                 }
+//             }
+//         }
+
+//         // Render the product add page
+//         res.render("prodectaddpage", {
+//             cat: categories,
+//             brand: brands,
+//             success: success,
+//             error: error,
+//         });
+//     } catch (error) {
+//         console.error("Error in getProductAddPage:", error);
+//         res.redirect("/admin/error");
+//     }
+// };
+
+
 const addprodect = async (req, res) => {
-    console.log("working add product");
     try {
         const prodects = req.body;
+        console.log(prodects);
 
         // Check if product already exists
-        // const prodectexists = await Product.findOne({
-        //     productName: prodects.productName,
-        // });
         const existsProduct = await Product.findOne({
-            productName: { $regex: `^${prodects.productName}$`, $options: "i" },
-            _id: { $ne: id },
+            productName: { $regex: `^${prodects.productName}$`, $options: "i" }
         });
 
-        if (!prodectexists) {
+        if (! existsProduct) {
             const images = [];
             if (req.files && req.files.length > 0) {
                 for (let i = 0; i < req.files.length; i++) {
@@ -87,7 +130,7 @@ const addprodect = async (req, res) => {
             });
 
             await newProdect.save();
-            return res.redirect("/admin/addProdects?success=Product added successfully");
+            return res.redirect("/admin/product");
         } else {
             return res.status(400).redirect("/admin/addProdects?error=Product already exists");
         }
@@ -98,90 +141,182 @@ const addprodect = async (req, res) => {
 };
 
 
-const listProduct = async(req,res)=>{
+// const listProduct = async(req,res)=>{
+//     try {
+//         if(!req.session.admin){
+//             return res.redirect("/admin/login");
+//           }
+//         // const search = req.query.search || "";
+//         // const page = req.query.page || 1;
+//         // const limit = 6;
+//         const prodectData = await Product.find().populate('category')
+
+//         // const count = await Product.find({
+//         //     $or:[
+//         //         {productName:{$regex:new RegExp(".*"+search+".*","i")}},
+//         //         {brand:{$regex:new RegExp(".*"+search+".*","i")}},
+//         //     ],
+//         // }).countDocuments();
+
+
+//         const category = await Category.find({isListed:true});
+//         const brand = await Brand.find({isBlock:false});
+
+//         return res.render("prodectlist",{data:prodectData,
+//             cat:category,
+//             brand:brand,
+//         })
+//     } catch (error) {
+//         console.log("list product error",error);
+//         res.redirect("/admin/error")
+//     }
+// }
+
+
+const listProduct = async (req, res) => {
     try {
-        if(!req.session.admin){
+        if (!req.session.admin) {
             return res.redirect("/admin/login");
-          }
-        // const search = req.query.search || "";
-        // const page = req.query.page || 1;
-        // const limit = 6;
-        const prodectData = await Product.find().populate('category')
-
-        // const count = await Product.find({
-        //     $or:[
-        //         {productName:{$regex:new RegExp(".*"+search+".*","i")}},
-        //         {brand:{$regex:new RegExp(".*"+search+".*","i")}},
-        //     ],
-        // }).countDocuments();
-
-
-        const category = await Category.find({isListed:true});
-        const brand = await Brand.find({isBlock:false});
-
-
-        // if(category && brand){
-        //     return res.render("prodectlist",{
-        //         data:prodectData,
-        //         currentPage:page,
-        //         totalPages:page,
-        //         firstTotalePage:Math.ceil(count/limit),
-        //         cat:category,
-        //         brand:brand,
-        //     })
-        // }else{
-        //     res.render("error")
-        // }
-        return res.render("prodectlist",{data:prodectData,
-            cat:category,
-            brand:brand,
-        })
-    } catch (error) {
-        console.log("list product error",error);
-        res.redirect("/admin/error")
-    }
-}
-
-
-const  addProductOffer = async(req,res)=>{
-    try {
-        const {productId,Percentage} = req.body;
-        const findProduct = await Product.findOne({_id:productId});
-        const findCategory = await Category.findOne({_id:findProduct.category});
-
-        if(findCategory.categoryOffer>Percentage){
-            return res.json({status:false,message:"This products catogory already has a category offer"})
         }
 
-        findProduct.salePrice = findProduct.salePrice.Math.floor(findProduct.regularPrice*(Percentage/100));
-        findProduct.productOffer = parseInt(Percentage);
-    await findProduct.save();
-    findCategory.categoryOffer = 0;
-    await findCategory.save();
-    res.json({status:true});
+        const page = parseInt(req.query.page, 10) || 1; 
+        const limit = 20; 
+        const skip = (page - 1) * limit;
 
 
+        const productData = await Product.find()
+            .populate('category')
+            .skip(skip)
+            .limit(limit);
+
+
+
+            for (const product of productData) {
+                if (product.category && product.category.categoryOffer) {
+                    const discountAmount = Math.floor(product.regularPrice * (product.category.categoryOffer / 100));
+                    const newSalePrice = product.regularPrice - discountAmount;
+    
+                    
+                    if (newSalePrice < product.salePrice) {
+                       
+                        product.salePrice = newSalePrice;    
+                        console.log(`Updated sale price for product ${product.productName}: ${product.salePrice}, Old Price: ${product.oldPrice}, new sale price${newSalePrice}`);
+                        await product.save();
+                    }
+                }
+            }
+    
+
+        const totalProducts = await Product.countDocuments();
+
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        const category = await Category.find({ isListed: true });
+        const brand = await Brand.find({ isBlock: false });
+
+        return res.render("prodectlist", {
+            data: productData,
+            cat: category,
+            brand: brand,
+            currentPage: page,
+            totalPages: totalPages,
+        });
     } catch (error) {
-            res.redirect("/admin/error");
-            res.status(500).json({status:false,message:"Internal Server Error"})
+        console.log("list product error", error);
+        res.redirect("/admin/error");
     }
 };
 
 
 
-const removeProductOffer = async(req,res)=>{
+async function addProductOffer(req, res) {
     try {
-        const {prodectId} = req.body;
-        const findProduct = await Product.findOne({_id:prodectId});
-        const Percentage = findProduct.productOffer;
-        findProduct.salePrice = findProduct.salePrice+Math.floor(findProduct.regularPrice*(Percentage/100));
-        findProduct.productOffer = 0;
+        const { productId, percentage } = req.body;
+        console.log(productId,percentage);
+
+        if (!productId || !percentage || percentage <= 0 || percentage > 100) {
+            console.log("Invalid product id");
+            return res.status(400).json({ status: false, message: "Invalid product ID or percentage" });
+        }
+
+        const findProduct = await Product.findById(productId);
+
+        if (!findProduct) {
+            console.log("product not found");
+            return res.status(404).json({ status: false, message: "Product not found" });
+        }
+
+        const findCategory = await Category.findById({_id:findProduct.category});
+        console.log("findcategory",findCategory);
+
+
+        findProduct.productOffer = percentage;
+     
+      // Determine the greater percentage between category offer and product offer
+      const effectiveOffer = findCategory && findCategory.offer > percentage 
+          ? findCategory.offer 
+          : percentage;
+
+      console.log("Effective Offer Used for Calculation:", effectiveOffer);
+
+      const discountAmount = Math.floor(findProduct.regularPrice * (effectiveOffer / 100));
+      const lessthanDiscountAmount = findProduct.regularPrice - discountAmount;
+
+      // Validate that the discounted price is less than the sale price
+      if (lessthanDiscountAmount > findProduct.salePrice) {
+          console.log("Discounted price is not less than the sale price.");
+          return res.status(404).json({ success: false, message: "Discounted price cannot be higher than the sale price" });
+      }
+      
+      // Update prices, but keep the product offer unchanged
+      findProduct.oldPrice = findProduct.salePrice;
+      findProduct.salePrice = lessthanDiscountAmount;
+
+      console.log("New Sale Price:", findProduct.salePrice, "Effective Offer Used:", effectiveOffer);
+      await findProduct.save();
+
+
+              return res.status(200).json({ status: true, message: "Offer added successfully", product: findProduct });
+          } catch (error) {
+             console.error("Error in addProductOffer:", error);
+              res.status(500).json({ status: false, message: "An error occurred while adding the offer" });
+          }
+    }
+
+
+
+
+
+const removeProductOffer = async (req, res) => {
+    try {
+        const { productId } = req.body;
+
+        if (!productId) {
+            return res.status(400).json({ status: false, message: "Invalid product ID" });
+        }
+
+        const findProduct = await Product.findById(productId);
+        if (!findProduct) {
+            return res.status(404).json({ status: false, message: "Product not found" });
+        }
+
+        // Check if there's an active offer
+        const percentage = findProduct.productOffer;
+        if (!percentage || percentage <= 0) {
+            return res.status(400).json({ status: false, message: "No active offer to remove" });
+        }
+
+        // Recalculate the sale price
+        // const discountAmount = Math.floor(findProduct.regularPrice * (percentage / 100));
+        findProduct.salePrice = findProduct.oldPrice;
+        findProduct.productOffer = 0; 
+
         await findProduct.save();
-        res.json({status:true})
 
-
+        res.status(200).json({ status: true, message: "Offer removed successfully" });
     } catch (error) {
-        res.redirect("/admin/error")
+        console.error("Error in removeProductOffer:", error);
+        res.status(500).json({ status: false, message: "An error occurred while removing the offer" });
     }
 };
 
@@ -305,9 +440,66 @@ const deleteImage = async(req,res)=>{
         console.log("single image delete error",error);
         res.status(500).json({success:false,message:"Internal Server Error"})
     }
+};
+
+
+
+const ProductStockManagement= async(req,res)=>{
+    try {
+        if(!req.session.admin){
+            return res.redirect("/admin/login");
+          }
+        // const search = req.query.search || "";
+        // const page = req.query.page || 1;
+        // const limit = 6;
+        const prodectData = await Product.find().populate('category')
+
+        // const count = await Product.find({
+        //     $or:[
+        //         {productName:{$regex:new RegExp(".*"+search+".*","i")}},
+        //         {brand:{$regex:new RegExp(".*"+search+".*","i")}},
+        //     ],
+        // }).countDocuments();
+
+
+        const category = await Category.find({isListed:true});
+        const brand = await Brand.find({isBlock:false});
+
+        return res.render("stockMenagenent",{data:prodectData,
+            cat:category,
+            brand:brand,
+        })
+    } catch (error) {
+        console.log("list product error",error);
+        res.redirect("/admin/error")
+    }
+};
+
+const postStock = async(req,res)=>{
+    const { productId, quantity } = req.body;
+
+    if (!productId || quantity === undefined) {
+        return res.status(400).json({ status: false, message: "Invalid data" });
+    }
+
+    try {
+        // Update the product in the database
+        const product = await Product.findByIdAndUpdate(
+            productId,
+            { quantity: Number(quantity) },
+            { new: true }
+        );
+
+        if (product) {
+            res.json({ status: true, message: "Quantity updated", currentQuantity: product.quantity });
+        } else {
+            res.status(404).json({ status: false, message: "Product not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: false, message: "Internal server error" });
+    }
 }
-
-
 
 
 
@@ -323,4 +515,6 @@ module.exports = {
     editProduct,
     updateproduct,
     deleteImage,
+    ProductStockManagement,
+    postStock,
 }

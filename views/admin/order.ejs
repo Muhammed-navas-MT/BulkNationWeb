@@ -37,12 +37,12 @@
                                                             <div>
                                                                 <p><b><%= product.name %></b></p>
                                                                 <p>Qty: <%= product.quantity %></p>
-                                                                <p>Price: $<%= product.price %></p>
+                                                                <p>Price: ₹<%= product.price %></p>
                                                             </div>
                                                         </div>
                                                     <% }) %>
                                                 </td>
-                                                <td>$<%= order.price %></td>
+                                                <td>₹<%= order.price %></td>
                                                 <!-- <td>
                                                     <select class="form-select">
                                                         <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
@@ -56,7 +56,7 @@
                                                 </td> -->
                                                 <td>
                                                     <span class="badge rounded-pill 
-                                                      <% if (order.status === 'Pending') { %> alert-warning 
+                                                      <% if (order.status === 'pending') { %> alert-warning 
                                                       <% } else if (order.status === 'Processing') { %> alert-info 
                                                       <% } else if (order.status === 'Shipped') { %> alert-primary 
                                                       <% } else if (order.status === 'Delivered') { %> alert-success 
@@ -69,44 +69,50 @@
                                                   </td>
                                                 <td><%= order.date %></td>
                                                 <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <button
-                                                          type="button"
-                                                          class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                                          data-bs-toggle="dropdown"
-                                                          aria-expanded="false"
-                                                          <% if (order.status === "Cancelled") { %> disabled <% } %>
-                                                        >
-                                                          Manage
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                          <% if (order.status !== "Cancelled") { %>
-                                                            <% 
-                                                              const statuses = [
-                                                                "Pending",
-                                                                "Processing",
-                                                                "Shipped",
-                                                                "Delivered",
-                                                                "Cancelled",
-                                                                "Return Request",
-                                                                "Returned"
-                                                              ]; 
-                                                            %>
-                                                            <% statuses.forEach(status => { %>
-                                                              <% if (order.status !== status) { %>
-                                                                <li>
-                                                                  <a
-                                                                    class="dropdown-item"
-                                                                    href="/admin/statusUpdate?orderId=<%= order.id %>&status=<%= encodeURIComponent(status) %>"
-                                                                  >
-                                                                    <%= status %>
-                                                                  </a>
-                                                                </li>
-                                                              <% } %>
-                                                            <% }); %>
-                                                          <% } %>
-                                                        </ul>
-                                                      </div>
+                                                  <div class="dropdown">
+                                                    <button
+                                                      type="button"
+                                                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                                      data-bs-toggle="dropdown"
+                                                      aria-expanded="false"
+                                                      <% if (order.status === "Cancelled") { %> disabled <% } %>
+                                                    >
+                                                      Manage
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                      <% 
+                                                        const statuses = [
+                                                          "Pending",
+                                                          "Processing",
+                                                          "Shipped",
+                                                          "Delivered",
+                                                        ]; 
+                                                        
+                                                        // Define the statuses to disable for each current status
+                                                        const disabledStatuses = {
+                                                          Delivered: ["Pending", "Processing", "Shipped"],
+                                                          Shipped: ["Pending", "Processing"],
+                                                          Processing: ["Pending"],
+                                                          Cancelled: statuses, // All statuses disabled for Cancelled
+                                                          Returned:statuses,
+                                                          "Return Request": ["Pending", "Processing", "Shipped", "Delivered"]
+                                                        };
+                                                      %>
+                                                      <% statuses.forEach(status => { %>
+                                                        <li>
+                                                          <a
+                                                            class="dropdown-item"
+                                                            href="/admin/statusUpdate?orderId=<%= order.id %>&status=<%= encodeURIComponent(status) %>"
+                                                            <% if (disabledStatuses[order.status]?.includes(status)) { %> 
+                                                              style="pointer-events: none; opacity: 0.5;" 
+                                                            <% } %>
+                                                          >
+                                                            <%= status %>
+                                                          </a>
+                                                        </li>
+                                                      <% }); %>
+                                                    </ul>
+                                                  </div>                                                  
                                                       <a href="/admin/order-details?id=<%= order.id %>" class="btn btn-md rounded font-sm">Detail</a>                                                                                                  
                                                 </td>
                                             </tr>
