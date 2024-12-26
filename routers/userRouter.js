@@ -59,26 +59,22 @@ router.get("/getCart",userAuth.userAuth,cartController.getCart);
 router.post("/cart/update-quantity",userAuth.userAuth,cartController.quatityUpdate);
 router.post("/cart/deleteProduct",userAuth.userAuth,cartController.removeFromCart);
 router.post("/add-to-cart",userAuth.userAuth,cartController.productAddToCart);
+router.post("/add-to-cart-single",userAuth.userAuth,cartController.addCart);
 
 // shop management
 router.get("/shopPage",shopController.getShopPage);
-// router.get("/priceLowToHigh",shopController.priceLowToHigh);
-// router.get("/priceHighToLow",shopController.priceHighToLow);
-// router.get("/sortProductA-Z",shopController.sortAToZ);
-// router.get("/sortProductZ-A",shopController.sortZToA);
-// router.get("/popularityProducts",shopController.popularityProducts);
-// router.get("/latestProduct",shopController.latestProduct);
-// router.get("/categotySort",shopController.categotySort);
 router.get("/checkout",userAuth.userAuth,checkoutController.getcheckoutPage);
 router.post("/checkout",userAuth.userAuth,checkoutController.postCheckout);
 router.get("/orderComform",checkoutController.orderComform);
-// router.get('/products/search',shopController.searchProducts);
+router.post("/check-out-addaddress",userAuth.userAuth,checkoutController.addAddress);
 
 // Order management
 router.get("/orderDetails",userAuth.userAuth,orderController.getOrderPage);
 router.get("/singeOrder",userAuth.userAuth,orderController.singleOrder);
 router.post("/cancelOrder/:id",userAuth.userAuth,orderController.cancelOrder);
 router.post("/returnOrder",userAuth.userAuth,orderController.returnOrder);
+router.post("/rePayment-order",userAuth.userAuth,orderController.repaymetOrder);
+router.post("/verify-repayment",userAuth.userAuth,orderController.verifyRePayment);
 
 // wishlist management
 router.get("/wishlist",userAuth.userAuth,wishlistController.getWishlist);

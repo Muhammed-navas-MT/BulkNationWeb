@@ -124,7 +124,7 @@ const postCheckout = async (req, res) => {
 
         const { address, products, subtotal, total, paymentMethod, couponCode, discount } = req.body;
 
-        console.log(discount);
+        console.log("discount type",parseFloat(discount));
         if (paymentMethod === "Cash On Delivery") {
            
             if (!Array.isArray(products) || products.length === 0) {
@@ -225,7 +225,7 @@ const postCheckout = async (req, res) => {
                 finalAmount: total,
                 status: "pending",
                 paymentMethod: paymentMethod,
-                payment_status:"pending",
+                payment_status:"Pending",
                 discount:discount,
             });
 
@@ -325,11 +325,16 @@ const verifyRazorpayPayment = async (req, res) => {
 
 const orderComform = async(req,res)=>{
     const orderId = req.query.id;
+    const msg = req.query.msg;
     try {
         if(!req.session.user){
             return res.redirect("/signup");
+        };
+        if("repayment"==msg){
+            const order = await Order.findOne({orderId:orderId})
+            return  res.render("orderComform",{totalPrice:order.finalAmount,date:order.createdOn.toLocaleDateString()});
         }
-       const order = await Order.findById({_id:orderId})
+       const order = await Order.findOne({_id:orderId})
       return  res.render("orderComform",{totalPrice:order.finalAmount,date:order.createdOn.toLocaleDateString()});
         
     } catch (error) {
@@ -338,7 +343,29 @@ const orderComform = async(req,res)=>{
     }
 };
 
-
+const addAddress = async(req,res)=>{
+    try {
+        const userId = req.session.user._id;
+        const userData = await User.findOne({_id:userId});
+        const {name,phone,addressType,city,state,landMark,pincode,altPhone} = req.body;
+        console.log(name,phone,addressType,city,state,landMark,pincode,altPhone);
+        const userAddress =await Address.findOne({userId:userData._id});
+        if(!userAddress){
+            const newAddress = new Address({
+                userId:userData._id,
+                address:[{addressType,name,city,landMark,state,pincode,phone,altPhone}]
+            })
+            await newAddress.save();
+        }else{
+            userAddress.address.push({addressType,name,city,landMark,state,pincode,phone,altPhone});
+            await userAddress.save();
+        }
+        return res.status(200).json({success:true,message:"Address added successfuly"})
+    } catch (error) {
+        console.log("post add address error",error);
+        res.status(500).json({success:false,message:"Internal Server Error"})
+    }
+};
 
 
 
@@ -347,5 +374,6 @@ module.exports = {
     postCheckout,
     orderComform,
     verifyRazorpayPayment,
+    addAddress,
 };
 

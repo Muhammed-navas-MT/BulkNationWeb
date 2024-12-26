@@ -260,7 +260,8 @@
                                         
                                             <div class="product-action-1 show">
                                                 <% if (products[i].quantity > 0) { %>
-                                                <a aria-label="Add To Cart" class="action-btn hover-up" href="/addToCart?id=<%= products[i]._id %>">
+                                                <!-- <a aria-label="Add To Cart" class="action-btn hover-up" href="/addToCart?id=<%= products[i]._id %>"> -->
+                                                    <a aria-label="Add To Cart" class="action-btn hover-up" onclick="addToCart('<%=products[i]._id%>')">
                                                     <i class="fi-rs-shopping-bag-add"></i>
                                                 </a>
                                                 <% } else { %>
@@ -306,6 +307,46 @@
                 }
             } catch (error) {
                 console.error('Error adding product to wishlist:', error);
+                Swal.fire({
+                  title: 'Welcome Back!',
+                  text: 'Please log in to continue and access your account.',
+                  icon: 'info',
+                  confirmButtonText: '<a href="/signup">Log In',
+                  footer: '<a href="/signup">Don’t have an account? Sign up here!</a>',
+                });
+            }
+        }
+
+
+        async function addToCart(productId) {
+            try {
+                const response = await fetch('/add-to-cart-single', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    Swal.fire({
+                        title: 'Sorry',
+                        text: data.message||null,
+                        icon: 'error',
+                        confirmButtonText: 'Okay'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Product added to Cart',
+                        icon: 'success',
+                        confirmButtonText: 'Okay'
+                    });
+                }
+            } catch (error) {
+                console.error('Error adding product to cart:', error);
                 Swal.fire({
                   title: 'Welcome Back!',
                   text: 'Please log in to continue and access your account.',

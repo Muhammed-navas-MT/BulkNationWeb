@@ -3,81 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bulk Nation - Wallet</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>My Wallet</title>
+    <!-- New CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        .nav-link:hover { color: orange; }
-        .nav-link.active { color: black; font-weight: bold; border-bottom: 2px solid #ffc107; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .navbar {
+            background-color: #ff8c00;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #ffd700 !important;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .btn-primary {
+            background-color: #ff8c00;
+            border-color: #ff8c00;
+        }
+        .btn-primary:hover {
+            background-color: #e67e00;
+            border-color: #e67e00;
+        }
+        .table th {
+            background-color: #ff8c00;
+            color: white;
+        }
+        .badge {
+            font-size: 0.8em;
+            padding: 0.5em 0.7em;
+        }
+        .wallet-section {
+            max-width: 900px;
+            margin: 50px auto;
+        }
+        .wallet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .wallet-balance {
+            color: orange;
+        }
+        .transaction-table {
+            margin-top: 20px;
+        }
+        .transaction-table thead th {
+            color: orange;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50">
-    <nav class="bg-white shadow-sm">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between h-16">
-                <a href="/" class="text-xl font-bold">Bulk Nation</a>
-                <button class="lg:hidden" aria-label="Toggle navigation">
-                    <span class="block w-6 h-px bg-gray-900 mb-1"></span>
-                    <span class="block w-6 h-px bg-gray-900 mb-1"></span>
-                    <span class="block w-6 h-px bg-gray-900"></span>
-                </button>
-                <div class="hidden lg:flex lg:items-center">
-                    <div class="flex space-x-4">
-                        <a href="/userProfile" class="nav-link px-3 py-2 text-sm text-gray-600">My Profile</a>
-                        <a href="/orderDetails" class="nav-link px-3 py-2 text-sm text-gray-600">My Orders</a>
-                        <a href="/userAdresses" class="nav-link px-3 py-2 text-sm text-gray-600">My Addresses</a>
-                        <a href="/wallet" class="nav-link active px-3 py-2 text-sm">BN Cash</a>
-                        <a href="#" class="nav-link px-3 py-2 text-sm text-gray-600">Saved Cards</a>
-                    </div>
-                </div>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">Bulk Nation</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userProfile"><i class="fas fa-user"></i> My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/orderDetails"><i class="fas fa-box"></i> My Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userAdresses"><i class="fas fa-map-marker-alt"></i> My Addresses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/wallet"><i class="fas fa-wallet"></i> BN Cash</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-credit-card"></i> Saved Cards</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div class="grid grid-cols-2 border-b">
-                <div class="p-6">
-                    <h2 style="color: orange;" class="text-gray-600 text-sm font-medium">Wallet Balance</h2>
-                    <p class="text-4xl font-bold mt-2">₹<%= wallet.balance%></p>
-                </div>
-                <div class="p-6 flex items-center justify-end">
-                    <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded">
-                        Add Money
-                    </button>
-                </div>
+    <!-- Wallet Section -->
+    <div class="container wallet-section">
+        <div class="wallet-header">
+            <div>
+                <h2 class="wallet-balance">Wallet Balance</h2>
+                <p class="text-4xl fw-bold">₹<%= wallet.balance ||0 %></p>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-b">
-                            <th style="color: orange;" class="text-left p-4 text-sm font-medium text-gray-600">Date</th>
-                            <th style="color: orange;" class="text-left p-4 text-sm font-medium text-gray-600">Transaction Type</th>
-                            <th style="color: orange;" class="text-left p-4 text-sm font-medium text-gray-600">Amount</th>
-                            <th style="color: orange;" class="text-left p-4 text-sm font-medium text-gray-600">Status</th>
+            <!-- <button class="btn btn-success">Add Money</button> -->
+        </div>
+        <%if(wallet.length==0){%>
+            <br>
+            <br>
+            <div class="text-center">
+                <img src="assets/imgs/banner/wallet.png" alt="No Transactions" style="max-width: 200px;">
+                <h3 class="mt-3">You don't have any BN Cash yet.</h3>
+                <p>You earn BN Cash every time you shop on BN. You can use it to purchase products from BN in the future.</p>
+                <a href="/shopPage" class="btn btn-warning">Explore BN</a>
+            </div>
+            <% }else{%>
+        <div class="transaction-table">
+            <table class="table table-striped">
+                <thead>
+                    <tr style="color: white;">
+                        <th style="color: white;">Date</th>
+                        <th style="color: white;">Transaction Type</th>
+                        <th style="color: white;">Amount</th>
+                        <th style="color: white;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (let i = 0; i < wallet.transactions.length; i++) { %>
+                        <tr>
+                            <td><%= wallet.transactions[i].date.toLocaleDateString() %></td>
+                            <td><%= wallet.transactions[i].type %></td>
+                            <td class="text-success">₹<%= wallet.transactions[i].amount %></td>
+                            <td class="text-success"><%= wallet.transactions[i].status %></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <% for (let i = 0; i < wallet.transactions.length; i++) { %>
-                            <tr class="border-b">
-                                <td class="p-4 text-sm"><%= wallet.transactions[i].date.toLocaleDateString() %></td>
-                                <td class="p-4 text-sm"><%= wallet.transactions[i].type %></td>
-                                <td class="p-4 text-sm text-emerald-500">+ ₹<%= wallet.transactions[i].amount %></td>
-                                <td class="p-4 text-sm text-emerald-500"><%= wallet.transactions[i].status %></td>
-                            </tr>
-                        <% } %>                        
-                    </tbody>
-                </table>
-            </div>
-            <!-- <div class="flex items-center justify-center p-4 border-t">
-                <nav class="flex items-center space-x-2">
-                    <button class="px-3 py-1 text-sm border rounded">Previous</button>
-                    <button class="px-3 py-1 text-sm border rounded bg-blue-500 text-white">1</button>
-                    <button class="px-3 py-1 text-sm border rounded">2</button>
-                    <button class="px-3 py-1 text-sm border rounded">3</button>
-                    <button class="px-3 py-1 text-sm border rounded">Next</button>
-                </nav>
-            </div> -->
+                    <% } %>
+               <%}%>
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

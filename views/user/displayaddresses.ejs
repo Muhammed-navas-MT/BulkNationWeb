@@ -5,207 +5,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Addresses</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-/* General Button Styles */
-.btn-save {
-    background-color: #ffc107;
-    color: black;
-    border: none;
-}
-.btn-save:hover {
-    background-color: #e0ac07;
-}
-.btn-danger:hover {
-    background-color: #c82333;
-}
-
-/* Navbar Styling */
-.navbar {
-    background-color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-.navbar-brand {
-    font-weight: bold;
-}
-.nav-link:hover {
-    color: orange;
-}
-.nav-link.active {
-    color: orange;
-    font-weight: bold;
-}
-
-/* Body Styling */
-body {
-    background-color: #f8f9fa;
-}
-
-/* Address List Container */
-#address-list {
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping to the next row */
-    gap: 20px; /* Space between cards */
-    justify-content: space-between; /* Distribute cards evenly */
-}
-
-/* Address Card Styling */
-.address-card {
-    background: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    width: 48%; /* Two cards per row */
-}
-
-/* Edit Button Styling */
-.edit-btn {
-    background-color: #ffc107;
-    color: black;
-    border: none;
-}
-.edit-btn:hover {
-    background-color: #e0ac07;
-}
-
-/* Separator Line Styling */
-hr {
-    border-top: 1px solid #e6e6e6;
-}
-
-/* Responsive Styling for Mobile */
-@media (max-width: 768px) {
-    #address-list {
-        gap: 10px; /* Reduce gap for smaller screens */
-    }
-    .address-card {
-        width: 100%; /* Full width for smaller screens */
-    }
-}
-
-
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .navbar {
+            background-color: #ff8c00;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #ffd700 !important;
+        }
+        .btn-save {
+            background-color: #ffc107;
+            color: black;
+            border: none;
+        }
+        .btn-save:hover {
+            background-color: #e0ac07;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .table th {
+            background-color: #ff8c00;
+            color: white;
+        }
+        .badge {
+            font-size: 0.8em;
+            padding: 0.5em 0.7em;
+        }
+        #address-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .address-card {
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            width: 48%;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+            color: black;
+            border: none;
+        }
+        .edit-btn:hover {
+            background-color: #e0ac07;
+        }
+        @media (max-width: 768px) {
+            #address-list {
+                gap: 10px;
+            }
+            .address-card {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">Bulk Nation</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userProfile"><i class="fas fa-user"></i> My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/orderDetails"><i class="fas fa-box"></i> My Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/userAdresses"><i class="fas fa-map-marker-alt"></i> My Addresses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/wallet"><i class="fas fa-wallet"></i> BN Cash</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-credit-card"></i> Saved Cards</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-<!-- Navbar with Hamburger Menu -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <!-- Address List -->
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/">Bulk Nation</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link " href="/userProfile">My Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/orderDetails">My Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/userAdresses">My Addresses</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/wallet">BN Cash</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Saved Cards</a>
-                </li>
-            </ul>
+        <div class="d-flex justify-content-between align-items-center mt-5">
+            <h2 class="fw-bold">My Addresses</h2>
+            <button class="btn btn-save" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                <a style="text-decoration: none; color: black;" href="/addAddress">Add New Address</a>
+            </button>
+        </div>
+
+        <div id="address-list" class="mt-4">
+            <% if (userAddress) { %>
+                <% userAddress.address.forEach((address) => { %>
+                    <div class="address-card">
+                        <h5><%= address.addressType %></h5>
+                        <address>
+                            <%= address.name %><br/>
+                            <%= address.city %><br/>
+                            <%= address.landMark %><br/>
+                            <%= address.state %><br/>
+                        </address>
+                        <p>
+                            <%= address.pincode %><br/>
+                            <%= address.phone %><br/>
+                            <%= address.altPhone %><br/>
+                        </p>
+                        <button class="btn btn-warning edit-btn">
+                            <a href="/editAddress?id=<%= address._id %>" style="text-decoration: none;">Edit</a>
+                        </button>
+                        <button class="btn btn-danger">
+                            <a href="/deleteAddress?id=<%= address._id %>" style="text-decoration: none;" onclick="return confirm('Are you sure you want to delete this address?')">Delete</a>
+                        </button>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="address-card">
+                    <h5 style="color: #ffc107;">Add a New Address</h5>
+                </div>
+            <% } %>
         </div>
     </div>
-</nav>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
 
-<!-- Address List -->
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mt-5">
-        <h2 class="fw-bold">My Addresses</h2>
-        <button class="btn btn-save" data-bs-toggle="modal" data-bs-target="#addAddressModal"><a style="text-decoration: none;"   href="/addAddress">Add New Address</a></button>
-    </div>
-
-    <div id="address-list" class="mt-4">
-        <!-- Address Cards Will Be Dynamically Added Here -->
-         <%if(userAddress){%>
-            <%userAddress.address.forEach((address)=>{%>
-        <div class="address-card">
-            <h5><%=address.addressType%></h5>
-            <address><%=address.name%><br/>
-                <%=address.city%><br/>
-                <%=address.landMark%><br/>
-                <%=address.state%><br/>
-            </address>
-            <p>
-                <%=address.pincode%><br/>
-                <%=address.phone%><br/>
-                <%=address.altPhone%><br/>
-            </p>
-            <button class="btn btn-warning edit-btn"><a href="/editAddress?id=<%=address._id%>" style="text-decoration: none;">Edit</a></button>
-            <button class="btn btn-danger"><a href="/deleteAddress?id=<%=address._id%>" style="text-decoration: none;" onclick="return confirm('Are you sure you want to detele address')">Delete</a></button>
-        </div>
-        <!-- Add more address cards here as needed -->
-         <%})%><%}else{%>
-        <div class="address-card">
-           <h5 style="color:#ffc107;"> Add new Address</h5>
-            <!-- <h5>456 Elm St</h5>
-            <p>Los Angeles, CA 90001</p> -->
-            <!-- <button class="btn btn-warning edit-btn">Edit</button>
-            <button class="btn btn-danger">Delete</button> -->
-        </div>
-        <%}%>
-    </div>
-</div>
-
-<!-- Modal for Adding Address (Not Needed in This Version) -->
-<!-- Modal code for adding address can be added here if needed -->
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // // You can handle editing and deleting address functionality here if needed
-    // // For example, you could add event listeners to the edit and delete buttons
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const editButtons = document.querySelectorAll('.edit-btn');
-    //     const deleteButtons = document.querySelectorAll('.btn-danger');
-
-    //     editButtons.forEach((button) => {
-    //         button.addEventListener('click', () => {
-    //             // Handle edit address functionality here (open modal, etc.)
-    //             alert("Edit functionality can be implemented here.");
-    //         });
-    //     });
-
-    //     deleteButtons.forEach((button) => {
-    //         button.addEventListener('click', () => {
-    //             // Handle delete address functionality here
-    //             if (confirm("Are you sure you want to delete this address?")) {
-    //                 alert("Address deleted.");
-    //                 // You can also call an API to delete the address from the backend
-    //             }
-    //         });
-    //     });
-    // });
-
-
-
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                // Remove 'active' from all links
-                navLinks.forEach(nav => nav.classList.remove('active'));
-                // Add 'active' to the clicked link
-                link.classList.add('active');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    link.classList.add('active');
+                });
             });
         });
-    });
-</script>
-</script>
+    </script>
 </body>
 </html>

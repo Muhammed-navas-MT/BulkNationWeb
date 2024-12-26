@@ -2,43 +2,107 @@ const Order = require("../../models/orderSchema");
 
 
 
-const getsales = async(req,res)=>{
-    try {
-        const orders = await Order.find({})
-          .populate("userId", "username") 
-          .sort({ createdOn: -1 }); 
+// const getsales = async(req,res)=>{
+//     try {
+//         const orders = await Order.find({})
+//           .populate("userId", "username") 
+//           .sort({ createdOn: -1 }); 
 
 
-          const stats = await Order.aggregate([
-            {
-              $group: {
-                _id: null,
-                totalSalesCount: { $sum: 1 },
-                totalOrderAmount: {
-                  $sum:{ $toDouble:{ $ifNull:["$finalAmount","0"]}} 
-                },
-                totalDiscount: {
-                  $sum:{$toDouble:{$ifNull:["$discount","0"]}}
-                }
-              }
-            }
-          ]);
+//           const stats = await Order.aggregate([
+//             {
+//               $group: {
+//                 _id: null,
+//                 totalSalesCount: { $sum: 1 },
+//                 totalOrderAmount: {
+//                   $sum:{ $toDouble:{ $ifNull:["$finalAmount","0"]}} 
+//                 },
+//                 totalDiscount: {
+//                   $sum:{$toDouble:{$ifNull:["$discount","0"]}}
+//                 }
+//               }
+//             }
+//           ]);
           
-          const { totalSalesCount = 0, totalOrderAmount = 0, totalDiscount = 0 } = stats[0] || {};
+//           const { totalSalesCount = 0, totalOrderAmount = 0, totalDiscount = 0 } = stats[0] || {};
 
-          console.log(stats);
-        res.render("salesReport", { 
+//           console.log(stats);
+//         res.render("salesReport", { 
+//           orders,
+//           totalSalesCount,
+//           totalOrderAmount,
+//           totalDiscount,
+
+//         }); 
+//       } catch (error) {
+//         console.error("Error fetching sale report:", error);
+//         res.status(500).send("Failed to load sale report.");
+//       }
+// }
+
+
+const getsales = async (req, res) => {
+  try {
+      // Check for search and pagination parameters
+      let search = req.query.search || "";
+      let page = parseInt(req.query.page, 10) || 1;
+      const limit = 20;
+
+      // Fetch orders with pagination
+      const orders = await Order.find({
+          $or: [
+              { "userId.username": { $regex: ".*" + search + ".*", $options: "i" } },
+              { "orderId": { $regex: ".*" + search + ".*", $options: "i" } },
+          ],
+      })
+      .populate("userId", "username")
+      .sort({ createdOn: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+      // Fetch aggregate stats
+      const stats = await Order.aggregate([
+          {
+              $group: {
+                  _id: null,
+                  totalSalesCount: { $sum: 1 },
+                  totalOrderAmount: {
+                      $sum: { $toDouble: { $ifNull: ["$finalAmount", "0"] } }
+                  },
+                  totalDiscount: {
+                      $sum: { $toDouble: { $ifNull: ["$discount", "0"] } }
+                  }
+              }
+          }
+      ]);
+
+      const { totalSalesCount = 0, totalOrderAmount = 0, totalDiscount = 0 } = stats[0] || {};
+
+      // Count total documents for pagination
+      const totalCount = await Order.countDocuments({
+          $or: [
+              { "userId.username": { $regex: ".*" + search + ".*", $options: "i" } },
+              { "orderId": { $regex: ".*" + search + ".*", $options: "i" } },
+          ],
+      });
+
+      const totalPages = Math.ceil(totalCount / limit);
+
+      res.render("salesReport", {
           orders,
           totalSalesCount,
           totalOrderAmount,
           totalDiscount,
+          totalPages,
+          currentPage: page,
+      });
+  } catch (error) {
+      console.error("Error fetching sale report:", error);
+      res.status(500).send("Failed to load sale report.");
+  }
+};
 
-        }); 
-      } catch (error) {
-        console.error("Error fetching sale report:", error);
-        res.status(500).send("Failed to load sale report.");
-      }
-}
 
 const generateReport = async (req, res) => {
     try {
