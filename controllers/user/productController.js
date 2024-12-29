@@ -1,6 +1,8 @@
 const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
 const User = require("../../models/userSchema");
+const Review = require("../../models/reviewScheama");
+
 
 
 const productDetails = async(req,res)=>{
@@ -25,7 +27,19 @@ const productDetails = async(req,res)=>{
          totalOffer = productOffer;
         } else {
           totalOffer = productOffer;
+        };
+
+        let latestReviews =null;
+        let allReviewsAscending =null;
+        let review = await Review.findOne({productId:productId}) || null;
+        if (review) {
+             latestReviews = review.reviews
+                .sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn))
+                .slice(0, 4); 
+             allReviewsAscending = review.reviews.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
         }
+        console.log("all",allReviewsAscending);
+        console.log("latedtss",latestReviews);
 
         res.render("productDetails",{
             // user:userData,
@@ -37,12 +51,16 @@ const productDetails = async(req,res)=>{
             flavor:product.flavor,
             similar:products,
             error :error,
+            review:review,
+            latestReviews:latestReviews,
+            allReviewsAscending:allReviewsAscending
         })
     } catch (error) {
         console.log("details page error",error.message)
         res.redirect("/pageNotFound");
     }
-}
+};
+
 
 module.exports ={
     productDetails,

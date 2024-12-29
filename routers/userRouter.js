@@ -11,7 +11,8 @@ const checkoutController = require("../controllers/user/checkoutController");
 const orderController = require("../controllers/user/orderController");
 const wishlistController = require("../controllers/user/wishlistController");
 const couponController = require("../controllers/user/couponController");
-const walletController = require("../controllers/user/walletController")
+const walletController = require("../controllers/user/walletController");
+const reviewController = require("../controllers/user/reviewController")
 
 
 router.get("/pageNotFound",userControllor.pageNotFound);
@@ -34,6 +35,7 @@ router.get("/logout",userControllor.loguot);
 
 // product management
 router.get("/productDetails",productController.productDetails);
+router.post("/addreview",userAuth.userAuth,reviewController.addReviews);
 
 // profile management
 router.get("/forget-password",profileController.getemail)
