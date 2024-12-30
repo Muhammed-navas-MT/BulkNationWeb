@@ -127,6 +127,7 @@ const addprodect = async (req, res) => {
                 flavor: prodects.flavor,
                 productImage: images,
                 status: "Available",
+                oldPrice: prodects.salePrice,
             });
 
             await newProdect.save();
@@ -139,38 +140,6 @@ const addprodect = async (req, res) => {
         return res.redirect("/admin/error");
     }
 };
-
-
-// const listProduct = async(req,res)=>{
-//     try {
-//         if(!req.session.admin){
-//             return res.redirect("/admin/login");
-//           }
-//         // const search = req.query.search || "";
-//         // const page = req.query.page || 1;
-//         // const limit = 6;
-//         const prodectData = await Product.find().populate('category')
-
-//         // const count = await Product.find({
-//         //     $or:[
-//         //         {productName:{$regex:new RegExp(".*"+search+".*","i")}},
-//         //         {brand:{$regex:new RegExp(".*"+search+".*","i")}},
-//         //     ],
-//         // }).countDocuments();
-
-
-//         const category = await Category.find({isListed:true});
-//         const brand = await Brand.find({isBlock:false});
-
-//         return res.render("prodectlist",{data:prodectData,
-//             cat:category,
-//             brand:brand,
-//         })
-//     } catch (error) {
-//         console.log("list product error",error);
-//         res.redirect("/admin/error")
-//     }
-// }
 
 
 const listProduct = async (req, res) => {
@@ -269,7 +238,7 @@ async function addProductOffer(req, res) {
       }
       
       // Update prices, but keep the product offer unchanged
-      findProduct.oldPrice = findProduct.salePrice;
+    //   findProduct.oldPrice = findProduct.salePrice;
       findProduct.salePrice = lessthanDiscountAmount;
 
       console.log("New Sale Price:", findProduct.salePrice, "Effective Offer Used:", effectiveOffer);
