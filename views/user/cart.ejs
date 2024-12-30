@@ -435,7 +435,7 @@
 //     console.log(quantities[i].textContent);
 // }
 
-const quantities = document.getElementById("quantity-<%= products[0].product._id %>");
+const quantities = document.getElementById("quantity-<%= products[0].product._id %>") ||null;
 console.log(quantities.textContent);
 const i = document.getElementById("i").textContent;
 console.log(typeof(i));
