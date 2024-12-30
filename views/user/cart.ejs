@@ -300,7 +300,7 @@
                                         <td class="text-center" data-title="Stock">
                                             <div class="detail-qty border radius m-auto">
                                                 <a href="/quantity" class="qty-down"><i class="fi-rs-angle-small-down"  onclick="updateQuantity('<%= products[i].product._id %>', 'decrease')"></i></a>
-                                                <span class="qty-val" id="quantity-<%= products[i].product._id %>"><%= products[i].quantity %></span>
+                                                <span class="qty-val" id="quantity-<%= products[i].product._id %>"><%= products[i].quantity ||0 %></span>
                                                 <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"  onclick="updateQuantity('<%= products[i].product._id %>', 'increase')"></i></a>
                                             </div>
                                         </td>
@@ -430,13 +430,5 @@
     };
 
 
-//     const quantities = document.getElementsByClassName("qty-val");
-// for (let i = 0; i < quantities.length; i++) {
-//     console.log(quantities[i].textContent);
-// }
 
-const quantities = document.getElementById("quantity-<%= products[0].product._id %>") ||null;
-console.log(quantities.textContent);
-const i = document.getElementById("i").textContent;
-console.log(typeof(i));
 </script>
