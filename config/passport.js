@@ -7,7 +7,7 @@ const env = require("dotenv").config();
 passport.use(new googleStrategy({
     clientID:process.env.GOOGLE_CLIENT_ID,//process.env.GOOGLE_CLIENT_ID
     clientSecret:process.env.GOOGLE_CLIENT_SECRET,//GOOGLE_CLIENT_SECRET
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: "https://bulknation.store/auth/google/callback"
 },
 
 async(accessToken,refereshToken,profile,done)=>{
