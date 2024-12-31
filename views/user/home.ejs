@@ -50,7 +50,28 @@
                             <li class="menu-item-has-children"><span class="menu-expand"></span><a href="/shopPage">shop</a>
                                 
                             </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#"></a>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#"><div>
+                                    
+                                <% if (user) { %>
+                                    <div class="dropdown">
+                                        
+                                        <a href="#" class="sign-in-link"><%= user.username %></a>
+                                        <div class="dropdown-content" >
+                                            <a href="/userProfile">Profile</a>
+                                            <a href="/logout">Logout</a>
+                                        </div>
+                                    </div>
+                                <% } else { %>
+                                    <div class="social-media">
+                                        <a href="/signup" class="social-icon">
+                                            <i class="fas fa-user"></i>
+                                        </a>
+                                    </div>
+
+                                    <!-- <a href="/signup">Signup / Login</a> -->
+                                <% } %>
+                            
+                        </div></a>
                               
                             </li>
                             <li class="menu-item-has-children"><span class="menu-expand"></span><a href=""></a>
