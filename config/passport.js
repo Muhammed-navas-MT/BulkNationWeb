@@ -12,7 +12,7 @@ passport.use(new googleStrategy({
 
 async(accessToken,refereshToken,profile,done)=>{
     try {
-       let user = await User.findOne({email:profile.email});
+       let user = await User.findOne({googleId:profile.id});
        if(user){
         return done(null,user);
        }else{
