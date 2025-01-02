@@ -54,23 +54,23 @@
                         <div class="col-md-4">
                             <div class="coupon-form">
                                 <h4 class="mb-4">Add New Coupon</h4>
-                                <form method="post" action="/admin/createCoupon" onsubmit="return validateForm()">
+                                <form id="couponForm">
                                     <div class="mb-3">
                                         <label class="form-label">Coupon Name</label>
                                         <input type="text" name="name" id="couponName" class="form-control" placeholder="Enter coupon name">
                                         <small id="nameError" class="text-danger"></small>
                                     </div>
-                                    
+                                
                                     <div class="mb-3">
                                         <label class="form-label">Start Date</label>
                                         <input type="date" name="createdOn" id="startDate" class="form-control">
-                                        <!-- <small id="dateError" class="text-danger"></small> -->
+                                        <small id="dateError1" class="text-danger"></small>
                                     </div>
                                 
                                     <div class="mb-3">
                                         <label class="form-label">End Date</label>
                                         <input type="date" name="expireOn" id="endDate" class="form-control">
-                                        <small id="dateError" class="text-danger"></small>
+                                        <small id="dateError2" class="text-danger"></small>
                                     </div>
                                 
                                     <div class="mb-3">
@@ -134,58 +134,82 @@
         </section>
     </main>
 
-    <!-- Edit Coupon Modals -->
-    <%for(let i=0;i<coupons.length;i++){%>
-    <div class="modal fade" id="editCouponModal-<%= i %>" tabindex="-1" aria-labelledby="editCouponModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editCouponModalLabel">Edit Coupon</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="/admin/updateCoupon?id=<%= coupons[i]._id %>" onsubmit="return validateModalForm()">
-                        <div class="mb-3">
-                            <label class="form-label">Coupon Name</label>
-                            <input type="text" name="name" id="couponName" class="form-control" value="<%= coupons[i].name %>" placeholder="Enter coupon name">
-                            <small id="mnameError" class="text-danger"></small>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Start Date</label>
-                            <input type="date" name="createdOn" id="startDate" class="form-control" value="<%= new Date(coupons[i].createdOn).toISOString().split('T')[0] %>">
-                            
-                        </div>
-                
-                        <div class="mb-3">
-                            <label class="form-label">End Date</label>
-                            <input type="date" name="expireOn" id="endDate" class="form-control" value="<%= new Date(coupons[i].expireOn).toISOString().split('T')[0] %>">
-                            <small id="mdateError" class="text-danger"></small>
-                        </div>
-                
-                        <div class="mb-3">
-                            <label class="form-label">Offer Price</label>
-                            <input type="number" name="offerPrice" id="offerPrice" class="form-control" value="<%= coupons[i].offerPrice %>" placeholder="Enter offer price">
-                            <small id="mofferError" class="text-danger"></small>
-                        </div>
-                
-                        <div class="mb-3">
-                            <label class="form-label">Minimum Price</label>
-                            <input type="number" name="minimumPrice" id="minimumPrice" class="form-control" value="<%= coupons[i].minimumPrice %>" placeholder="Enter minimum price">
-                            <small id="mpriceError" class="text-danger"></small>
-                        </div>
-                
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    <% for (let i = 0; i < coupons.length; i++) { %>
+        <div class="modal fade" id="editCouponModal-<%= i %>" tabindex="-1" aria-labelledby="editCouponModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editCouponModalLabel">Edit Coupon</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="couponUpdateForm" data-index="<%= i %>">
+                            <div class="mb-3">
+                                <input id="couponId" type="text" style="display: none;" value="<%= coupons[i]._id %>">
+                                <label class="form-label">Coupon Name</label>
+                                <input 
+                                    type="text" 
+                                    name="name" 
+                                    id="couponName-<%= i %>" 
+                                    class="form-control" 
+                                    value="<%= coupons[i].name %>" 
+                                    placeholder="Enter coupon name"
+                                >
+                                <small id="nameError-<%= i %>" class="text-danger"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input 
+                                type="date" 
+                                name="createdOn" 
+                                id="startDate-<%= i %>" 
+                                class="form-control" 
+                                value="<%= new Date(coupons[i].createdOn).toISOString().slice(0, 10) %>"
+                            >                            
+                                <small id="dateError1-<%= i %>" class="text-danger"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">End Date</label>
+                                <input 
+                                    type="date" 
+                                    name="expireOn" 
+                                    id="endDate-<%= i %>" 
+                                    class="form-control" 
+                                    value="<%= new Date(coupons[i].expireOn).toISOString().slice(0, 10) %>"
+                                >
+                                <small id="dateError2-<%= i %>" class="text-danger"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Offer Percentage</label>
+                                <input 
+                                    type="number" 
+                                    name="offerPrice" 
+                                    id="offerPrice-<%= i %>" 
+                                    class="form-control" 
+                                    value="<%= coupons[i].offerPrice %>" 
+                                    placeholder="Enter offer percentage"
+                                >
+                                <small id="offerError-<%= i %>" class="text-danger"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Minimum Price</label>
+                                <input 
+                                    type="number" 
+                                    name="minimumPrice" 
+                                    id="minimumPrice-<%= i %>" 
+                                    class="form-control" 
+                                    value="<%= coupons[i].minimumPrice %>" 
+                                    placeholder="Enter minimum price"
+                                >
+                                <small id="priceError-<%= i %>" class="text-danger"></small>
+                            </div>
                             <button type="submit" class="btn btn-primary">Update Coupon</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <%}%>
-
+    <% } %>
     <footer class="main-footer font-xs">
         <div class="row pb-30 pt-15">
             <div class="col-sm-6">
@@ -270,95 +294,239 @@
     }
 };
 
-function validateForm() {
-let isValid = true;
+const validateForm = () => {
+    let isValid = true;
+    const couponName = document.getElementById("couponName").value.trim();
+    const nameError = document.getElementById("nameError");
+    const nameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]+$/;
 
-
-const couponName = document.getElementById("couponName").value.trim();
-    const nameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]+$/; 
     if (!nameRegex.test(couponName)) {
-        document.getElementById("nameError").textContent = "Coupon name must contain both letters and numbers, and no spaces.";
+        nameError.textContent = "Coupon name must contain both letters and numbers, and no spaces.";
         isValid = false;
     } else {
-        document.getElementById("nameError").textContent = "";
+        nameError.textContent = "";
     }
 
-// Validate Dates
-const startDate = new Date(document.getElementById("startDate").value);
-const endDate = new Date(document.getElementById("endDate").value);
-if (endDate <= startDate) {
-    document.getElementById("dateError").textContent = "End date must be less than the start date.";
-    isValid = false;
-} else {
-    document.getElementById("dateError").textContent = "";
-}
+    // Validate Dates
+    const today = new Date().setHours(0, 0, 0, 0);
+    const startDate = new Date(document.getElementById("startDate").value).setHours(0, 0, 0, 0);
+    const endDate = new Date(document.getElementById("endDate").value).setHours(0, 0, 0, 0);
+    const dateError1 = document.getElementById("dateError1");
+    const dateError2 = document.getElementById("dateError2");
 
-// Validate Offer Price
-const offerPrice = document.getElementById("offerPrice").value;
-if (offerPrice < 0 || offerPrice > 100) {
-    document.getElementById("offerError").textContent = "Offer percentage must be between 0 and 100.";
-    isValid = false;
-} else {
-    document.getElementById("offerError").textContent = "";
-}
+    if (startDate < today) {
+        dateError1.textContent = "Start date cannot be in the past.";
+        dateError2.textContent = "";
+        isValid = false;
+    } else if (endDate <= startDate) {
+        dateError2.textContent = "End date must be after the start date.";
+        dateError1.textContent = "";
+        isValid = false;
+    } else {
+        dateError1.textContent = "";
+        dateError2.textContent = "";
+    }
 
-// Validate Minimum Price
-const minimumPrice = document.getElementById("minimumPrice").value;
-if (minimumPrice <= 0) {
-    document.getElementById("priceError").textContent = "Minimum price must be a positive number.";
-    isValid = false;
-} else {
-    document.getElementById("priceError").textContent = "";
-}
+    // Validate Offer Price
+    const offerPrice = document.getElementById("offerPrice").value.trim();
+    const offerError = document.getElementById("offerError");
+    if (offerPrice < 0 || offerPrice > 100) {
+        offerError.textContent = "Offer percentage must be between 0 and 100.";
+        isValid = false;
+    } else {
+        offerError.textContent = "";
+    }
 
-return isValid; 
+    // Validate Minimum Price
+    const minimumPrice = document.getElementById("minimumPrice").value.trim();
+    const priceError = document.getElementById("priceError");
+    if (minimumPrice <= 0) {
+        priceError.textContent = "Minimum price must be a positive number.";
+        isValid = false;
+    } else {
+        priceError.textContent = "";
+    }
+
+    return isValid;
 };
 
 
 
-function validateModalForm() {
-    let isValidd = true;
+    document.getElementById("couponForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (!validateForm()) {
+            Swal.fire({
+                icon: "error",
+                title: "Validation Error",
+                text: "Please correct the highlighted errors.",
+            });
+            return;
+        }
+
+        const formData = {
+            name: document.getElementById("couponName").value.trim(),
+            createdOn: document.getElementById("startDate").value.trim(),
+            expireOn: document.getElementById("endDate").value.trim(),
+            offerPrice: document.getElementById("offerPrice").value.trim(),
+            minimumPrice: document.getElementById("minimumPrice").value.trim(),
+        };
+
+        try {
+            const response = await fetch("/admin/createCoupon", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Coupon added successfully!",
+                }).then(() => {
+                    window.location.href = "/admin/coupon";
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: result.message || "Failed to add coupon.",
+                });
+            }
+        } catch (error) {
+            console.error("Error adding coupon:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "An error occurred while adding the coupon.",
+            });
+        }
+    });
+
+
+
+    function validateModalForm(index) {
+    let isValid = true;
 
     // Validate Coupon Name
-    const couponName = document.getElementById("couponName").value.trim();
-    const nameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]+$/; 
+    const couponName = document.getElementById(`couponName-${index}`).value.trim();
+    const nameError = document.getElementById(`nameError-${index}`);
+    const nameRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]+$/;
     if (!nameRegex.test(couponName)) {
-        document.getElementById("mnameError").textContent = "Coupon name must contain both letters and numbers, and no spaces.";
-        isValidd = false;
+        nameError.textContent = "Coupon name must contain both letters and numbers, and no spaces.";
+        isValid = false;
     } else {
-        document.getElementById("mnameError").textContent = "";
+        nameError.textContent = "";
     }
 
     // Validate Dates
-    const startDate = new Date(document.getElementById("startDate").value);
-    const endDate = new Date(document.getElementById("endDate").value);
-    if (endDate <= startDate) {
-        document.getElementById("mdateError").textContent = "End date must be greater than the start date.";
-        isValidd = false;
-    } else {
-        document.getElementById("mdateError").textContent = "";
-    }
+    const today = new Date().setHours(0, 0, 0, 0);
+    const startDate = new Date(document.getElementById(`startDate-${index}`).value).setHours(0, 0, 0, 0);
+    const endDate = new Date(document.getElementById(`endDate-${index}`).value).setHours(0, 0, 0, 0);
 
-    // Validate Offer Price
-    const offerPrice = document.getElementById("offerPrice").value;
-    if (offerPrice < 0 || offerPrice > 100) {
-        document.getElementById("mofferError").textContent = "Offer percentage must be between 0 and 100.";
+    const dateError1 = document.getElementById(`dateError1-${index}`);
+    const dateError2 = document.getElementById(`dateError2-${index}`);
+
+    if (startDate < today) {
+        dateError1.textContent = "Start date cannot be in the past.";
         isValid = false;
     } else {
-        document.getElementById("mofferError").textContent = "";
+        dateError1.textContent = "";
+    }
+
+    if (endDate <= startDate) {
+        dateError2.textContent = "End date must be greater than the start date.";
+        isValid = false;
+    } else {
+        dateError2.textContent = "";
+    }
+
+    // Validate Offer Percentage
+    const offerPrice = document.getElementById(`offerPrice-${index}`).value.trim();
+    const offerError = document.getElementById(`offerError-${index}`);
+    if (offerPrice < 0 || offerPrice > 100) {
+        offerError.textContent = "Offer percentage must be between 0 and 100.";
+        isValid = false;
+    } else {
+        offerError.textContent = "";
     }
 
     // Validate Minimum Price
-    const minimumPrice = document.getElementById("mminimumPrice").value;
+    const minimumPrice = document.getElementById(`minimumPrice-${index}`).value.trim();
+    const priceError = document.getElementById(`priceError-${index}`);
     if (minimumPrice <= 0) {
-        document.getElementById("mpriceError").textContent = "Minimum price must be a positive number.";
-        isValidd = false;
+        priceError.textContent = "Minimum price must be a positive number.";
+        isValid = false;
     } else {
-        document.getElementById("mpriceError").textContent = "";
+        priceError.textContent = "";
     }
 
-    return isValidd; 
+    return isValid;
 }
+
+document.querySelectorAll(".couponUpdateForm").forEach((form, index) => {
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (!validateModalForm(index)) {
+            Swal.fire({
+                icon: "error",
+                title: "Validation Error",
+                text: "Please correct the highlighted errors.",
+            });
+            return;
+        }
+
+        const formData = {
+            name: document.getElementById(`couponName-${index}`).value.trim(),
+            createdOn: document.getElementById(`startDate-${index}`).value.trim(),
+            expireOn: document.getElementById(`endDate-${index}`).value.trim(),
+            offerPrice: document.getElementById(`offerPrice-${index}`).value.trim(),
+            minimumPrice: document.getElementById(`minimumPrice-${index}`).value.trim(),
+        };
+        const couponId = document.getElementById(`couponId`).value.trim();
+
+        try {
+            const response = await fetch(`/admin/updateCoupon?id=${couponId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Coupon updated successfully!",
+                }).then(() => {
+                    window.location.href = "/admin/coupon";
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: result.message || "Failed to update coupon.",
+                });
+            }
+        } catch (error) {
+            console.error("Error updating coupon:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "An error occurred while updating the coupon.",
+            });
+        }
+    });
+});
     </script>
 </body>
 </html>
