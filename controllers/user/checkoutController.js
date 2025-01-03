@@ -4,6 +4,7 @@ const Cart = require("../../models/cartSchema");
 const Address = require("../../models/addressSchema");
 const Order = require('../../models/orderSchema');
 const Coupon = require("../../models/couponSchema");
+const Wallet = require("../../models/walletSchema")
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
@@ -25,6 +26,12 @@ const getcheckoutPage = async (req, res) => {
             return res.redirect("/signup");
         }
 
+        let findWallet = await Wallet.findOne({ userId: user._id }, { balance: 1 });
+        if (!findWallet) {
+            findWallet = { balance: 0 };
+        }
+
+        console.log('findWallet',findWallet);
         const coupon = await Coupon.find({});
         const address = await Address.findOne({userId:user._id}) || [];
         if (!productId) {
@@ -64,7 +71,7 @@ const getcheckoutPage = async (req, res) => {
                 return sum + item.salePrice * item.quantity;
             }, 0);
             const adr = address.address || [];
-            return res.render("checkout", { user, product: products, subtotal ,quantity:null,address:adr,coupons:coupon});
+            return res.render("checkout", { user, product: products, subtotal ,quantity:null,address:adr,coupons:coupon,wallet:findWallet});
         }
 
         if (productId) {
@@ -72,7 +79,7 @@ const getcheckoutPage = async (req, res) => {
             const product = await Product.findOne({_id:productId,isBlocked:false})
             if (!product) {
                 // return res.redirect("/pageNotFound");
-                return res.render("checkout", { user, product: [], subtotal:0,quantity:0 ,address:address.address,coupons:coupon});
+                return res.render("checkout", { user, product: [], subtotal:0,quantity:0 ,address:address.address,coupons:coupon,wallet:findWallet});
             }
 
 
@@ -87,7 +94,7 @@ const getcheckoutPage = async (req, res) => {
             const subtotal = productData.salePrice * quantity;
          
 
-            return res.render("checkout", { user, product: [productData], subtotal,quantity:quantity ,address:address.address,coupons:coupon});
+            return res.render("checkout", { user, product: [productData], subtotal,quantity:quantity ,address:address.address,coupons:coupon,wallet:findWallet});
         }
     } catch (error) {
         console.error("Error fetching checkout page:", error.message);
@@ -185,6 +192,74 @@ const postCheckout = async (req, res) => {
                 return res.status(400).json({ success: false, message: "Error saving order" });
             }
         }
+        if(paymentMethod === "Wallet"){
+            if (!Array.isArray(products) || products.length === 0) {
+                return res.status(400).json({ success: false, message: "No products provided" });
+            }
+    
+            const groupedProducts = products.reduce((acc, item) => {
+                acc[item.id] = acc[item.id] || { ...item, quantity: 0 };
+                acc[item.id].quantity += item.quantity;
+                return acc;
+            }, {});
+    
+            for (let productId in groupedProducts) {
+                const item = groupedProducts[productId];
+                const product = await Product.findById(productId); 
+    
+                if (!product) {
+                    return res.status(404).json({ success: false, message: `Product not found: ${productId}` });
+                }
+    
+                if (product.quantity < item.quantity) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Not enough stock for product: ${product.name}`,
+                    });
+                }
+    
+                product.quantity -= item.quantity;
+                await product.save();
+            }
+
+            const findUser = await User.findByIdAndUpdate(
+                { _id: userId._id },
+                {$push: {coupons: { code: couponCode, appliedAt: new Date() }}},
+                { new: true }
+            );
+    
+            const newOrder = new Order({
+                userId: userId,
+                orderedItems:products,
+                shippingAddress: address,
+                totalPrice: subtotal,
+                finalAmount: total,
+                status: "pending",
+                paymentMethod: paymentMethod,
+                payment_status:"Success",
+                discount:discount,
+
+            });
+            
+            await Cart.findOneAndUpdate({userId:userId._id}, {$set:{items:[]}});
+            const orderId = newOrder._id
+            const orderSave = await newOrder.save();
+            if (orderSave) {
+                const findWallet = await Wallet.findOne({userId:userId});
+                const totall = total;
+                console.log("this is a total",totall);
+                    findWallet.balance -= totall;
+                    findWallet.transactions.push({
+                        type: "Purchase",
+                        amount: total,
+                        orderId: orderId,
+                        status: "Completed"
+                    });
+                    await findWallet.save();
+                }
+                
+                return res.status(200).json({ success: true, message: "Order placed", orderId:orderId});
+            } 
 
         if (paymentMethod === "Online") {
             if (!Array.isArray(products) || products.length === 0) {

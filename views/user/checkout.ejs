@@ -391,7 +391,7 @@
                             </table>
                         </div>
                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                        <div class="payment_method">
+                        <!-- <div class="payment_method">
                             <div class="mb-25">
                                 <h5>Payment</h5>
                             </div>
@@ -403,7 +403,30 @@
                                 <input class="form-check-input" required type="radio" name="payment_option" id="onlineRadio">
                                 <label class="form-check-label" for="onlineRadio">Online</label>
                             </div>
+                            <div id="" class="custome-radio">
+                                <input class="form-check-input" required type="radio" name="payment_option" id="cashRadio" checked>
+                                <label class="form-check-label" for="cashRadio">Wallet</label>
+                            </div>
+                        </div> -->
+                        <div class="payment_method">
+                            <div class="mb-25">
+                                <h5>Payment</h5>
+                                <h3 id="walletValue" style="display: none;"><%= wallet.balance%></h3>
+                            </div>
+                            <div id="cashOnDelivery" class="custome-radio">
+                                <input class="form-check-input" required type="radio" name="payment_option" id="cashRadio">
+                                <label class="form-check-label" for="cashRadio">Cash On Delivery</label>
+                            </div>
+                            <div id="onlinePayment" class="custome-radio">
+                                <input class="form-check-input" required type="radio" name="payment_option" id="onlineRadio">
+                                <label class="form-check-label" for="onlineRadio">Online</label>
+                            </div>
+                            <div id="walletPayment" class="custome-radio">
+                                <input class="form-check-input" required type="radio" name="payment_option" id="walletRadio">
+                                <label class="form-check-label" for="walletRadio">Wallet</label>
+                            </div>
                         </div>
+                        
                         <button type="button" id="placeOrder" class="btn btn-sm btn-ship">Place Order</button>
                     </div>
                 </div>
@@ -490,44 +513,93 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// function updatePaymentOptions() {
+//     const totalPrice = parseFloat(document.querySelector('#totalPrice').textContent.replace('₹', '').trim());
+
+//     document.querySelectorAll('input[name="payment_option"]').forEach((radio) => {
+//         if (totalPrice > 930) {
+//             if (radio.id === "cashRadio") {
+//                 radio.disabled = true;
+//                 radio.checked = false; 
+//             }
+//             if (radio.id === "onlineRadio") {
+//                 radio.disabled = false;
+//                 radio.checked = true; // Automatically select Online Payment
+//             }
+//             paymentMethod = "Online"; // Ensure the payment method is set correctly
+//         } else {
+//             radio.disabled = false; // Enable all payment methods
+//         }
+//     });
+// }
+
+
+// document.addEventListener('DOMContentLoaded', updatePaymentOptions);
+
+
+// // -----
+
+
+// // select payment method option
+
+// let paymentMethod = "Cash On Delivery"; 
+
+// document.querySelectorAll('input[name="payment_option"]').forEach((radio) => {
+//     radio.addEventListener('change', function () {
+//         paymentMethod = this.id === "onlineRadio" ? "Online" : "Cash On Delivery";
+//     });
+// });
+
+// -----
+
+
+const walletValue = parseFloat(document.getElementById("walletValue").textContent.trim());
+
 function updatePaymentOptions() {
     const totalPrice = parseFloat(document.querySelector('#totalPrice').textContent.replace('₹', '').trim());
+    const radios = document.querySelectorAll('input[name="payment_option"]');
+    let updatedPaymentMethod = false;
 
-    document.querySelectorAll('input[name="payment_option"]').forEach((radio) => {
-        if (totalPrice > 930) {
+    radios.forEach((radio) => {
+        if (radio.id === "walletRadio") {
+            if (walletValue === 0 || walletValue < totalPrice) {
+                radio.disabled = true;
+                radio.checked = false;
+            } else {
+                radio.disabled = false;
+            }
+        } else if (totalPrice > 930) {
             if (radio.id === "cashRadio") {
                 radio.disabled = true;
-                radio.checked = false; 
-            }
-            if (radio.id === "onlineRadio") {
+                radio.checked = false;
+            } else {
                 radio.disabled = false;
-                radio.checked = true; // Automatically select Online Payment
+                if (!updatedPaymentMethod) {
+                    radio.checked = true; // Automatically select an enabled option
+                    paymentMethod = radio.id === "onlineRadio" ? "Online" : "Wallet";
+                    updatedPaymentMethod = true;
+                }
             }
-            paymentMethod = "Online"; // Ensure the payment method is set correctly
         } else {
             radio.disabled = false; // Enable all payment methods
         }
     });
 }
 
+let paymentMethod = "Cash On Delivery"; // Default
 
-document.addEventListener('DOMContentLoaded', updatePaymentOptions);
-
-
-// -----
-
-
-// select payment method option
-
-let paymentMethod = "Cash On Delivery"; 
-
-document.querySelectorAll('input[name="payment_option"]').forEach((radio) => {
-    radio.addEventListener('change', function () {
-        paymentMethod = this.id === "onlineRadio" ? "Online" : "Cash On Delivery";
+document.addEventListener('DOMContentLoaded', () => {
+    updatePaymentOptions();
+    document.querySelectorAll('input[name="payment_option"]').forEach((radio) => {
+        radio.addEventListener('change', function () {
+            paymentMethod = this.id === "onlineRadio" ? "Online" : 
+                            this.id === "walletRadio" ? "Wallet" : 
+                            "Cash On Delivery";
+        });
     });
 });
 
-// -----
+
 
 // select shiping address function
 
@@ -650,6 +722,8 @@ document.querySelectorAll('input[name="payment_option"]').forEach((radio) => {
 
         if (response.ok) {
             if (paymentMethod === 'Cash On Delivery') {
+                window.location.href = `/orderComform?id=${data.orderId}`;
+            }if (paymentMethod === 'Wallet') {
                 window.location.href = `/orderComform?id=${data.orderId}`;
             } else if (paymentMethod === 'Online') {
                 if (data.razorpay) {

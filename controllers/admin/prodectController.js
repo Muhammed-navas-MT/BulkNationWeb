@@ -324,6 +324,7 @@ const editProduct = async(req,res)=>{
         const category = await Category.find({isListed:true}) || req.query.cat;
         const brand = await Brand.find({isBlock:false})|| req.query.brand;
         const msg = req.query.msg || "";
+        console.log(product);
         res.render("editProduct",{
             product:product,
             cat:category,
