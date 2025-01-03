@@ -128,7 +128,7 @@ const cancelOrder =async(req,res)=>{
           const orderDetails = await Order.findOne({orderId:orderId});
           console.log(orderDetails,"this is a order details");
 
-          if(orderDetails.paymentMethod =="Online" && orderDetails.payment_status == "Success"){
+          if(orderDetails.paymentMethod =="Online" && orderDetails.payment_status == "Success" ||orderDetails.paymentMethod =="Wallet" ){
 
             let wallet = await Wallet.findOne({ userId });
 
