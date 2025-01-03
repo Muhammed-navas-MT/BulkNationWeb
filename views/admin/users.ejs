@@ -51,11 +51,18 @@
                                         </td>
                                         <td><%= seller.email %></td>
                                         <td><span><%= seller.phone %></span></td>
-                                        <td class="text-end">
+                                        <!-- <td class="text-end">
                                             <% if (seller.isBlocked === false) { %>
                                                 <a href="/admin/blockCustomer?id=<%= seller._id %>" class="btn btn-sm btn-brand rounded font-sm mt-15">Block</a>
                                             <% } else { %>
                                                 <a href="/admin/unblockCustomer?id=<%= seller._id %>" class="btn btn-sm btn-brand rounded font-sm mt-15">UnBlock</a>
+                                            <% } %>
+                                        </td> -->
+                                        <td class="text-end">
+                                            <% if (seller.isBlocked === false) { %>
+                                                <a onclick="return blockedUser('<%= seller._id %>')" class="btn btn-sm btn-brand rounded font-sm mt-15">Block</a>
+                                            <% } else { %>
+                                                <a onclick="return unBlockedUser('<%= seller._id %>')" class="btn btn-sm btn-brand rounded font-sm mt-15">UnBlock</a>
                                             <% } %>
                                         </td>
                                     </tr>
@@ -99,7 +106,105 @@
     <script src="/backend/assets/js/vendors/perfect-scrollbar.js"></script>
     <script src="/backend/assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/backend/assets/js/main.js" type="text/javascript"></script>
+    <script>
+       async function blockedUser(userId) {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to block this user?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, block user!',
+        cancelButtonText: 'Cancel'
+    });
+
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch(`/admin/blockCustomer?id=${userId}`, {
+                method: "GET"
+            });
+            const data = await response.json();
+            if(data.success== true){
+                Swal.fire(
+                'Blocked!',
+                'The user has been blocked successfully.',
+                'success'
+            ).then(()=>{
+                window.location.reload();
+            })
+            }else{
+                Swal.fire(
+                'Error!',
+                'The user has been not blocked',
+                'error'
+            ).then(()=>{
+                window.location.reload();
+            })
+            }
+           
+        } catch (error) {
+            Swal.fire(
+                'Error!',
+                'An error occurred while blocking the user.',
+                'error'
+            );
+            console.error('Error blocking user:', error);
+        }
+    }
+}
+
+
+
+async function unBlockedUser(userId) {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to unblock this user?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, unblock user!',
+        cancelButtonText: 'Cancel'
+    });
+
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch(`/admin/unblockCustomer?id=${userId}`, {
+                method: "GET"
+            });
+            const data = await response.json();
+            if(data.success== true){
+                Swal.fire(
+                'UnBlocked!',
+                'The user has been Unblocked successfully.',
+                'success'
+            ).then(()=>{
+                window.location.reload();
+            })
+            }else{
+                Swal.fire(
+                'Error!',
+                'The user has been  Unblocked faild',
+                'error'
+            ).then(()=>{
+                window.location.reload();
+            })
+            }
+           
+        } catch (error) {
+            Swal.fire(
+                'Error!',
+                'An error occurred while unblocking the user.',
+                'error'
+            );
+            console.error('Error unblocking user:', error);
+        }
+    }
+}
+    </script>
 </body>
 
 </html>

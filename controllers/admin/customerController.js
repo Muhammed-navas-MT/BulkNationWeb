@@ -52,17 +52,15 @@ const customerBlocked = async (req,res)=>{
         const user  = await User.findOne({_id:id});
         await User.updateOne({_id:id},{$set:{isBlocked:true}});
         const u = req.session.user || null;
-        console.log(u);
         if(u!== null){
            if(id === u._id){
            req.session.user = null;
-           console.log("hey working");
            }
         }
-        return res.redirect("/admin/users");
+        return res.status(200).json({success:true,message:"user block successfully"});
     } catch (error) {
         console.log("error block ",error.message)
-       res.redirect("/error");
+        return res.status(500).json({success:false,message:"Internal server error"});
     }
 };
 
@@ -70,9 +68,9 @@ const customeUnBlocked = async (req,res)=>{
     try {
         let id = req.query.id;
         await User.updateOne({_id:id},{$set:{isBlocked:false}});
-       return res.redirect("/admin/users");
+       return res.status(200).json({success:true,message:"user block successfully"});
     } catch (error) {
-       return res.redirect("/error");
+       return res.status(500).json({success:false,message:"Internal server error"});
     }
 }
 
