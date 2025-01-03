@@ -241,8 +241,8 @@
                 </form>
                 <br>
             <button type="button" class="btn btn-light"  onclick="printTableRows()">Download PDF</button>
-            <!-- <button type="button" class="btn btn-light">Download Excel</button> -->
-            </div>
+            <button type="" id="crear" onclick="clear()" class="btn btn-light">Clear sort</button>
+          </div>
             <div class="card mt-4">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -321,6 +321,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script> 
     document.addEventListener("DOMContentLoaded", () => {
+      
   async function fetchFilteredOrders(quickSelect, startDate, endDate) {
     try {
       let queryParams = new URLSearchParams();
@@ -372,9 +373,13 @@
   // Date Range Filter
   document.getElementById("filter-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const startDate = document.getElementById("start-date").value;
+    const response = validtion();
+    if(response){
+      const startDate = document.getElementById("start-date").value;
     const endDate = document.getElementById("end-date").value;
     fetchFilteredOrders(null, startDate, endDate);
+    }
+    
   });
 });
    
@@ -508,7 +513,46 @@ function printTableRows() {
 
   // Trigger data fetching
   fetchAllFilteredData();
-}
+};
+
+function clear() {
+    window.location.reload();
+};
+
+document.getElementById("crear").addEventListener("click", clear);
+
+function validtion (){
+        const startDateInput = document.getElementById('start-date').value;
+        const endDateInput = document.getElementById('end-date').value;
+
+        const startDate = new Date(startDateInput);
+        const endDate = new Date(endDateInput);
+        const today = new Date();
+
+        // Remove time components for accurate date comparison
+        today.setHours(0, 0, 0, 0);
+
+        if (startDate >= today) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Start Date',
+            text: 'Start Date must be in the past.',
+        });
+        return false; // Stop execution if validation fails
+    }
+
+    // Validation: Check if the start date is earlier than or equal to the end date
+    if (startDate > endDate) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Date Range',
+            text: 'Ending date must be graterthan Starting date',
+        });
+        return false; // Stop execution if validation fails
+    }
+
+        return true;
+    };
     </script>
     
 </body>
