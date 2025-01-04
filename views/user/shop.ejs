@@ -192,9 +192,7 @@
                                     <i class="fi-rs-search"></i> Search
                                 </button>
                             </form>
-                            
-                        </div>
-                        
+                        </div>                        
                         <!-- <div class="totall-product">
                             
                              <p> We found <strong class="text-brand">688</strong> items for you!</p> 
@@ -226,13 +224,16 @@
                                     <ul>
                                         <li><a href="#" onclick="applySort('priceLowToHigh')">Price: Low to High</a></li>
                                         <li><a href="#" onclick="applySort('priceHighToLow')">Price: High to Low</a></li>
-                                        <li><a href="#" onclick="applySort('popularity')">Popularity</a></li>
+                                        <!-- <li><a href="#" onclick="applySort('popularity')">Popularity</a></li> -->
                                         <li><a href="#" onclick="applySort('aToZ')">aA - zZ</a></li>
                                         <li><a href="#" onclick="applySort('zToA')">zZ - aA</a></li>
                                         <li><a href="#" onclick="applySort('latest')">New arrivals</a></li>
                                     </ul>
                                 </div>
                             </div>
+                            <span id="clear" class="btn btn-primary btn-sm d-inline-flex align-items-center" onclick="clearFilters()">
+                                <i class="fas fa-times-circle me-2"></i> Clear
+                              </span>                              
                         </div>
                     </div>
                     <div class="row product-grid-3">
@@ -306,10 +307,12 @@
                             </ul>
                         </nav>
                     </div> -->
-                    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+
+                    <!--///////////////////////////////////////// -->
+                    <!-- <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-start">
-                                <!-- Previous Button -->
+                                 Previous Button -
                                 <% if (currentPage > 1) { %>
                                     <li class="page-item">
                                         <a class="page-link" href="?page=<%= currentPage - 1 %>">
@@ -318,14 +321,14 @@
                                     </li>
                                 <% } %>
                     
-                                <!-- Page Numbers -->
+        
                                 <% for (let i = 1; i <= totalPages; i++) { %>
                                     <li class="page-item <%= i === currentPage ? 'active' : '' %>">
                                         <a class="page-link" href="?page=<%= i %>"><%= i %></a>
                                     </li>
                                 <% } %>
                     
-                                <!-- Next Button -->
+            
                                 <% if (currentPage < totalPages) { %>
                                     <li class="page-item">
                                         <a class="page-link" href="?page=<%= currentPage + 1 %>">
@@ -335,7 +338,42 @@
                                 <% } %>
                             </ul>
                         </nav>
+                    </div> -->
+
+
+                    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-start">
+                                <!-- Previous Button -->
+                                <% if (currentPage > 1) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<%= currentPage - 1 %>&sort=<%= sortOption %>&categoryId=<%= categoryId %>&brandName=<%= brandName %>&search=<%= searchQuery %>">
+                                            <i class="fi-rs-angle-double-small-left"></i>
+                                        </a>
+                                    </li>
+                                <% } %>
+                    
+                                <!-- Page Numbers -->
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                        <a class="page-link" href="?page=<%= i %>&sort=<%= sortOption %>&categoryId=<%= categoryId %>&brandName=<%= brandName %>&search=<%= searchQuery %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                <% } %>
+                    
+                                <!-- Next Button -->
+                                <% if (currentPage < totalPages) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<%= currentPage + 1 %>&sort=<%= sortOption %>&categoryId=<%= categoryId %>&brandName=<%= brandName %>&search=<%= searchQuery %>">
+                                            <i class="fi-rs-angle-double-small-right"></i>
+                                        </a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </nav>
                     </div>
+                    
                     
                     
                 </div>
@@ -422,10 +460,40 @@
                   footer: '<a href="/signup">Don’t have an account? Sign up here!</a>',
                 });
             }
+    };
+
+    function clearFilters() {
+    const url = new URL(window.location.href);
+    
+    url.search = "";
+    url.searchParams.set("page", 1);
+
+    window.location.href = url.toString();
+};
+
+function generatePaginationLinks(totalPages, currentSort) {
+    const url = new URL(window.location.href);
+    const paginationContainer = document.getElementById("pagination");
+
+    paginationContainer.innerHTML = ""; // Clear existing pagination links
+
+    for (let i = 1; i <= totalPages; i++) {
+        const pageUrl = new URL(url); // Clone the current URL
+        pageUrl.searchParams.set("page", i);
+
+        if (currentSort) {
+            pageUrl.searchParams.set("sort", currentSort);
         }
 
+        const link = document.createElement("a");
+        link.href = pageUrl.toString();
+        link.textContent = i;
+        link.className = "page-link";
 
-    
+        paginationContainer.appendChild(link);
+    }
+}
+
   </script>
   
 
