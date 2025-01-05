@@ -338,6 +338,7 @@ const editProduct = async(req,res)=>{
 }
 
 const updateproduct = async(req,res)=>{
+    console.log("navAAD");
     try {
        const id = req.query.id;
        const product = await Product.findOne({_id:id});
