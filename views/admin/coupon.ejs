@@ -135,17 +135,25 @@
     </main>
 
     <% for (let i = 0; i < coupons.length; i++) { %>
-        <div class="modal fade" id="editCouponModal-<%= i %>" tabindex="-1" aria-labelledby="editCouponModalLabel" aria-hidden="true">
+        <!-- <button 
+            class="btn btn-sm btn-primary" 
+            data-bs-toggle="modal" 
+            data-bs-target="#editCouponModal-<%= i %>">
+            Edit
+        </button> -->
+        
+        <div class="modal fade" id="editCouponModal-<%= i %>" tabindex="-1" aria-labelledby="editCouponModalLabel-<%= i %>" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editCouponModalLabel">Edit Coupon</h5>
+                        <h5 class="modal-title" id="editCouponModalLabel-<%= i %>">Edit Coupon</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form class="couponUpdateForm" data-index="<%= i %>">
+                            <input id="couponId-<%= i %>" type="text" style="display: none;" value="<%= coupons[i]._id %>">
+                            
                             <div class="mb-3">
-                                <input id="couponId" type="text" style="display: none;" value="<%= coupons[i]._id %>">
                                 <label class="form-label">Coupon Name</label>
                                 <input 
                                     type="text" 
@@ -153,21 +161,21 @@
                                     id="couponName-<%= i %>" 
                                     class="form-control" 
                                     value="<%= coupons[i].name %>" 
-                                    placeholder="Enter coupon name"
-                                >
+                                    placeholder="Enter coupon name">
                                 <small id="nameError-<%= i %>" class="text-danger"></small>
                             </div>
+                            
                             <div class="mb-3">
                                 <label class="form-label">Start Date</label>
                                 <input 
-                                type="date" 
-                                name="createdOn" 
-                                id="startDate-<%= i %>" 
-                                class="form-control" 
-                                value="<%= new Date(coupons[i].createdOn).toISOString().slice(0, 10) %>"
-                            >                            
+                                    type="date" 
+                                    name="createdOn" 
+                                    id="startDate-<%= i %>" 
+                                    class="form-control" 
+                                    value="<%= coupons[i].expireOn.getFullYear() %>-<%= (coupons[i].expireOn.getMonth() + 1).toString().padStart(2, '0') %>-<%= coupons[i].createdOn.getDate().toString().padStart(2, '0') %>">
                                 <small id="dateError1-<%= i %>" class="text-danger"></small>
                             </div>
+                            
                             <div class="mb-3">
                                 <label class="form-label">End Date</label>
                                 <input 
@@ -175,10 +183,10 @@
                                     name="expireOn" 
                                     id="endDate-<%= i %>" 
                                     class="form-control" 
-                                    value="<%= new Date(coupons[i].expireOn).toISOString().slice(0, 10) %>"
-                                >
+                                    value="<%= coupons[i].expireOn.getFullYear() %>-<%= (coupons[i].expireOn.getMonth() + 1).toString().padStart(2, '0') %>-<%= coupons[i].expireOn.getDate().toString().padStart(2, '0') %>">
                                 <small id="dateError2-<%= i %>" class="text-danger"></small>
                             </div>
+                            
                             <div class="mb-3">
                                 <label class="form-label">Offer Percentage</label>
                                 <input 
@@ -187,10 +195,10 @@
                                     id="offerPrice-<%= i %>" 
                                     class="form-control" 
                                     value="<%= coupons[i].offerPrice %>" 
-                                    placeholder="Enter offer percentage"
-                                >
+                                    placeholder="Enter offer percentage">
                                 <small id="offerError-<%= i %>" class="text-danger"></small>
                             </div>
+                            
                             <div class="mb-3">
                                 <label class="form-label">Minimum Price</label>
                                 <input 
@@ -199,17 +207,17 @@
                                     id="minimumPrice-<%= i %>" 
                                     class="form-control" 
                                     value="<%= coupons[i].minimumPrice %>" 
-                                    placeholder="Enter minimum price"
-                                >
+                                    placeholder="Enter minimum price">
                                 <small id="priceError-<%= i %>" class="text-danger"></small>
                             </div>
+                            
                             <button type="submit" class="btn btn-primary">Update Coupon</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    <% } %>
+    <% } %>    
     <footer class="main-footer font-xs">
         <div class="row pb-30 pt-15">
             <div class="col-sm-6">
@@ -489,7 +497,7 @@ document.querySelectorAll(".couponUpdateForm").forEach((form, index) => {
             offerPrice: document.getElementById(`offerPrice-${index}`).value.trim(),
             minimumPrice: document.getElementById(`minimumPrice-${index}`).value.trim(),
         };
-        const couponId = document.getElementById(`couponId`).value.trim();
+        const couponId = document.getElementById(`couponId-${index}`).value.trim();
 
         try {
             const response = await fetch(`/admin/updateCoupon?id=${couponId}`, {
@@ -527,6 +535,7 @@ document.querySelectorAll(".couponUpdateForm").forEach((form, index) => {
         }
     });
 });
+
     </script>
 </body>
 </html>
