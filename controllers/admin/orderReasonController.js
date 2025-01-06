@@ -13,7 +13,10 @@ const getOrderReason = async(req,res)=>{
         if(!admin){
             return res.redirect("/admin/login");
         }
-        const findReason = await Reason.find({}).populate("userId");
+        const findReason = await Reason.find({})
+        .populate("userId")
+        .sort({ _id: -1 });
+        
         if(!findReason){
             return res.render("orderReason",{reasons:[]});
         }

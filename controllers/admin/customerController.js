@@ -24,6 +24,7 @@ const customerInfo = async (req, res) => {
                 { email: { $regex: ".*" + search + ".*", $options: "i" } },
             ],
         })
+        .sort({ _id: -1 }) 
         .limit(limit)
         .skip((page - 1) * limit)
         .exec();

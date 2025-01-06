@@ -356,7 +356,9 @@ const updateproduct = async(req,res)=>{
         const brand = await Brand.find({isBlock:false});
 
        if(existsProduct){
-        return res.status(404).redirect(`/admin/editProduct?msg= This Product name already exists& product=${existsProduct}&cat=${category}&brand=${brand}`);
+        // return res.status(404).redirect(`/admin/editProduct?msg= This Product name already exists& product=${existsProduct}&cat=${category}&brand=${brand}`);
+        // return res.status(404).redirect(`/admin/editProduct?msg=This%20Product%20name%20already%20exists&product=${encodeURIComponent(existsProduct)}&cat=${encodeURIComponent(category)}&brand=${encodeURIComponent(brand)}`);
+                return res.status(404).redirect(`/admin/editProduct?msg= This Product name already exists&id=${id}`);
        }
 
        const image = [];

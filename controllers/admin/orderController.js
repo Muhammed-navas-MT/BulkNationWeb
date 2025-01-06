@@ -58,6 +58,7 @@ const renderOrderPage = async (req, res) => {
             .populate('userId', 'name')
             .populate('orderedItems.id', 'name productImage')
             .select('orderId shippingAddress orderedItems status createdOn totalPrice')
+            .sort({ createdOn: -1 })
             .limit(limit)
             .skip((page - 1) * limit)
             .exec();

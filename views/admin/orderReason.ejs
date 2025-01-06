@@ -180,7 +180,7 @@
                                           <%= reasons[i].returnStatus %>
                                         </span>
                                       </td>                                      
-                                    <td>Nov 24, 2024</td>
+                                      <td><%= new Date(reasons[i].sendedAt).toLocaleDateString() %></td>
                                     <td>
                                         <% if (reasons[i].returnStatus === 'pending') { %>
                                           <button class="btn btn-success" onclick="approveReturnRequest('<%= reasons[i]._id %>')">Approve</button>

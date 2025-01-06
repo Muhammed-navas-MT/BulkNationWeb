@@ -173,6 +173,7 @@
                 <small class="error-message" id="altPhoneError"></small>
             </div>
             <button type="submit" class="btn btn-save">Save Address</button>
+            <button class="btn btn-primary"><a style="text-decoration: none;" href="/userAdresses">Cancel</a></button>
         </form>
     </div>
 </div>
@@ -297,12 +298,18 @@
             if (response.ok) {
                 // Display success message
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Address Saved',
-                    text: 'Your address has been successfully saved!',
-                });
-                // Clear the form
-                window.location.href ="/userAdresses"
+    icon: 'success',
+    title: 'Address Saved',
+    text: 'Your address has been successfully saved!',
+    confirmButtonText: 'OK', // Text for the confirm button
+    confirmButtonColor: '#3085d6', // Optional: Customize button color
+}).then((result) => {
+    if (result.isConfirmed) {
+        // Redirect to user addresses when OK is clicked
+        window.location.href = "/userAdresses";
+    }
+});
+
             } else {
                 // Display error message from server
                 Swal.fire({

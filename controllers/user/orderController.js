@@ -22,26 +22,34 @@ const getOrderPage = async (req, res) => {
         }
 
         const userId = req.session.user._id;
-        const orders = await Order.find({ userId: userId });
 
+        // Default values for page and limit
+        let page = parseInt(req.query.page, 10) || 1;
+        const limit = 10; // Number of orders per page
+        const skip = (page - 1) * limit;
 
+        // Fetch paginated orders
+        const orders = await Order.find({ userId: userId })
+            .sort({ createdOn: -1 }) // Sort by createdOn in descending order
+            .limit(limit)
+            .skip(skip);
+
+        // Count total orders for the user
+        const totalOrders = await Order.countDocuments({ userId: userId });
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        // If no orders found, render with empty array
         if (!orders || orders.length === 0) {
-            return res.render("orderDetails", { orders: [] });
+            return res.render("orderDetails", { orders: [], currentPage: page, totalPages });
         }
 
-
-        const orderedItems = orders.map(order => {
-            return order.orderedItems || [];
-        });
-        
-        orders.sort((a,b)=>b.createdOn- a.createdOn);
-
-        return res.render("orderDetails", { orders });
+        return res.render("orderDetails", { orders, currentPage: page, totalPages });
     } catch (error) {
         console.error("Error rendering order page:", error.message);
         res.redirect("/pageNotFound");
     }
 };
+
 
 
 
