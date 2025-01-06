@@ -111,26 +111,50 @@
                                        <div class="col-md-3">
                                            <h6>3. Media</h6>
                                        </div>
+                                        <!-- Existing Images -->
+                                <div class="mb-4">
+                                    <% if(product.productImage.length==0){%>
+                                        <h2 style="display: none;" id="length">0</h2>
+                                    <%}%>
+                                    <label class="form-label">Current Images</label>
+                                    <div class="row">
+                                        <% for(let i=0; i<product.productImage.length; i++) { %>
+                                            <div class="col-md-3 mb-3">
+                                                <div class="position-relative">
+                                                    <input type="hidden" value="<%=product.productImage[i]%>" id="imageData<%=i%>">
+                                                    <img class="img-fluid rounded" src="/uploads/re-image/<%=product.productImage[i]%>" alt="Product Image">
+                                                    <h2 style="display: none;" id="length"><%=product.productImage.length || 0%></h2>
+                                                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" 
+                                                            onclick="deleteSingleImage('<%=product.productImage[i]%>','<%=product.id%>')">
+                                                        <i class="material-icons md-delete_forever"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
                        
                                        <div class="col-md-9">
+                                        <div id="error8" style="color: red;"></div>
                                            <!-- Input 1 -->
                                            <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                                <input class="form-control" type="file" name="images" id="input1"
                                                       accept="image/png, image/jpeg, image/jpg"
-                                                      onchange="viewImage(event, 1)" required>
+                                                      onchange="viewImage(event, 1)" >
                                                <img id="imgView1" style="max-width: 100px; margin-top: 10px;" />
                                                <div id="croppedContainer1" class="image-cropper d-flex align-items-center"
                                                     style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                                    <img src="" id="croppedImg1" alt="Cropped Image">
                                                    <button type="button" id="saveButton1" class="btn-sm btn-primary">Save</button>
                                                </div>
+                                               <button type="button" id="removeButton1" class="btn-sm btn-danger" style="display:none;" onclick="removeImage(1)">Remove Image</button>
                                            </div>
                                        
                                            <!-- Input 2 -->
                                            <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                                <input class="form-control" type="file" name="images" id="input2"
                                                       accept="image/png, image/jpeg, image/jpg"
-                                                      onchange="viewImage(event, 2)" required>
+                                                      onchange="viewImage(event, 2)" >
                                                <img id="imgView2" style="max-width: 100px; margin-top: 10px;" />
                         
                                                <div id="croppedContainer2" class="image-cropper d-flex align-items-center"
@@ -144,7 +168,7 @@
                                            <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                                <input class="form-control" type="file" name="images" id="input3"
                                                       accept="image/png, image/jpeg, image/jpg"
-                                                      onchange="viewImage(event, 3)" required>
+                                                      onchange="viewImage(event, 3)">
                                                <img id="imgView3" style="max-width: 100px; margin-top: 10px;" />
                         
                                                   <div id="croppedContainer3" class="image-cropper d-flex align-items-center"
@@ -158,7 +182,7 @@
                                               <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                                   <input class="form-control" type="file" name="images" id="input4"
                                                          accept="image/png, image/jpeg, image/jpg"
-                                                         onchange="viewImage(event, 4)" required>
+                                                         onchange="viewImage(event, 4)" >
                                                   <img id="imgView4" style="max-width: 100px; margin-top: 10px;" />
                         
                                                  <div id="croppedContainer4" class="image-cropper d-flex align-items-center"
@@ -197,12 +221,15 @@
 <script src="/backend/assets/js/vendors/select2.min.js"></script>
 <script src="/backend/assets/js/vendors/perfect-scrollbar.js"></script>
 <script src="/backend/assets/js/vendors/jquery.fullscreen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Main Script -->
 <script src="/backend/assets/js/main.js" type="text/javascript"></script>
 <script>
 
  
 document.getElementById("productForm").addEventListener("submit", function (event) {
+    console.log("navas working this function");
     event.preventDefault(); // Prevent form submission
 
     // Clear previous error messages
@@ -210,7 +237,6 @@ document.getElementById("productForm").addEventListener("submit", function (even
         elem.innerHTML = "";
     });
 
-    const errors = [];
     let hasError = false;
 
     // Get form values
@@ -226,6 +252,10 @@ document.getElementById("productForm").addEventListener("submit", function (even
         document.getElementById("input3").files.length,
         document.getElementById("input4").files.length,
     ];
+    const currentImageLength = parseInt(document.getElementById("length").textContent.trim(), 10); // Current image length
+
+    // Total number of images uploaded (current image + input images)
+    const totalImages = currentImageLength + images.reduce((acc, length) => acc + length, 0);
 
     // Validation logic with error display
     if (!/^[A-Za-z\s]+$/.test(title)) {
@@ -252,8 +282,10 @@ document.getElementById("productForm").addEventListener("submit", function (even
         document.getElementById("error7").innerText = "Please enter a valid size.";
         hasError = true;
     }
-    if (images.every((image) => image === 0)) {
-        document.getElementById("errorMessages").innerText = "Please upload at least one image.";
+
+    // Image validation: total uploaded images should not exceed 4
+    if (totalImages > 4) {
+        document.getElementById("error8").innerText = "You can upload a maximum of 4 images in total.";
         hasError = true;
     }
 
@@ -262,6 +294,7 @@ document.getElementById("productForm").addEventListener("submit", function (even
         this.submit();
     }
 });
+
 
 
 
@@ -336,9 +369,58 @@ function viewImage1(event) {
 };
 
 
-function deleteSingleImage(imageI,productId){
+function deleteSingleImage(imageId, productId) {
+    fetch("/admin/deleteImage", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            imageIdToServer: imageId,
+            productIdToServer: productId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            Swal.fire({
+                title: "Error!",
+                text: data.message || "Failed to delete the image.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+        return response.json(); // Assuming the server sends a JSON response
+    })
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: "Success!",
+                text: "Image deleted successfully.",
+                icon: "success",
+                confirmButtonText: "OK"
+            }).then(() => {
+               window.location.reload(); // Reload the page after user confirms
+            });
+        } else {
+            Swal.fire({
+                title: "Error!",
+                text: data.message || "Failed to delete the image.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: "Error!",
+            text: error.message || "An unexpected error occurred.",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        console.error("Error:", error);
+    });
+};
 
-}
 
     
 </script>

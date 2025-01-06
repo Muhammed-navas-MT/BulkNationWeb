@@ -361,7 +361,7 @@ const updateproduct = async(req,res)=>{
 
        const image = [];
        if (product) {
-        product.productImage = [];
+        // product.productImage = [];
         await product.save();
         }
        if(req.files && req.files.length>0){
